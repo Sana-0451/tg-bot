@@ -722,7 +722,6 @@
   <!-- Tab bar -->
   <div class="tab-bar">
     <div class="tab-item" onclick="showPage('overview',null)">首页</div>
-    <div class="tab-item" onclick="showPage('users',null)">用户管理 <span class="tab-close">×</span></div>
     <div class="tab-item" onclick="showPage('commands',null)">角色管理 <span class="tab-close">×</span></div>
     <div class="tab-item active" onclick="showPage('users',null)"><span class="tab-dot"></span> 用户列表 <span class="tab-close">×</span></div>
   </div>
@@ -754,14 +753,14 @@
         </div>
         <div class="metric-card">
           <div class="metric-top">
-            <span class="metric-label">上分订单数（今日）</span>
+            <span class="metric-label">今日上分订单数</span>
             <div class="metric-icon" style="background:#FFFBEB;color:#D97706"><i class="ti ti-plus"></i></div>
           </div>
           <div class="metric-value" id="site-up-orders">0</div>
         </div>
         <div class="metric-card">
           <div class="metric-top">
-            <span class="metric-label">下分订单数（今日）</span>
+            <span class="metric-label">今日下分订单数</span>
             <div class="metric-icon" style="background:#F5F3FF;color:#7C3AED"><i class="ti ti-message"></i></div>
           </div>
           <div class="metric-value" id="site-down-orders">0</div>
@@ -787,7 +786,7 @@
 
       <!-- Action buttons -->
       <div class="action-bar">
-        <button class="btn" onclick="batchToggleStatus()">批量启用(禁用)</button>
+        <button class="btn" onclick="batchToggleStatus()">批量启用/禁用</button>
         <button class="btn" style="background:#fff;display:none" onclick="openBatchAddModal()"><i class="ti ti-plus"></i> 批量添加</button>
       </div>
 
@@ -815,8 +814,8 @@
               <td style="color:#333">@sunny_trader</td>
               <td style="color:#666">Sunny</td>
               <td><span class="badge badge-normal">一般</span></td>
-              <td style="color:#666;font-size:12px">—</td>
-              <td style="color:#666;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2026-01-15</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
               <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
@@ -827,8 +826,8 @@
               <td style="color:#333">@ace024</td>
               <td style="color:#666">Ace</td>
               <td><span class="badge badge-normal">一般</span></td>
-              <td style="color:#666;font-size:12px">—</td>
-              <td style="color:#666;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2026-02-08</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
               <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
@@ -839,8 +838,8 @@
               <td style="color:#333">@powerbank_li</td>
               <td style="color:#666">Power Li</td>
               <td><span class="badge" style="background:#FFF3E0;color:#E6A23C">测试</span></td>
-              <td style="color:#666;font-size:12px">—</td>
-              <td style="color:#666;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2025-12-20</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
               <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
@@ -851,8 +850,8 @@
               <td style="color:#333">@stock_chen</td>
               <td style="color:#666">Stock Chen</td>
               <td><span class="badge badge-normal">一般</span></td>
-              <td style="color:#666;font-size:12px">—</td>
-              <td style="color:#666;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2026-03-11</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
               <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
@@ -1079,13 +1078,13 @@
             </tr>
             <tr>
               <td style="padding-left:14px;font-family:monospace;color:var(--primary)">/deposit</td>
-              <td style="color:#666">发起上分（充值）申请</td>
+              <td style="color:#666">发起上分申请</td>
               <td><span class="badge badge-active">所有人</span></td>
               <td><span class="badge badge-active">启用</span></td>
             </tr>
             <tr>
               <td style="padding-left:14px;font-family:monospace;color:var(--primary)">/withdraw</td>
-              <td style="color:#666">发起下分（提现）申请</td>
+              <td style="color:#666">发起下分申请</td>
               <td><span class="badge badge-active">所有人</span></td>
               <td><span class="badge badge-active">启用</span></td>
             </tr>
@@ -1099,7 +1098,7 @@
           <p>1. 所有指令均需以「/」开头，在与机器人的私聊或已授权群组中发送。</p>
           <p>2. 「仅管理员」权限的指令仅限后台设置的管理员账号使用，其他用户发送将被忽略。</p>
           <p>3. 指令的启用状态由后台统一控制，禁用后用户发送该指令将收到提示消息。</p>
-          <p>4. 如需调整指令文案或新增自定义指令，请联系技术人员协助配置。</p>
+          <p>4. 如需调整指令文案或添加自定义指令，请联系技术人员协助配置。</p>
         </div>
       </div>
     </div>
@@ -1314,7 +1313,7 @@
           </select>
           <select class="fi" style="width:120px" id="oplog-filter-action">
             <option value="">全部操作</option>
-            <option value="新增">新增</option>
+            <option value="添加">添加</option>
             <option value="编辑">编辑</option>
             <option value="删除">删除</option>
           </select>
@@ -1340,11 +1339,11 @@
             </tr>
           </thead>
           <tbody id="oplog-table-body">
-            <tr data-page="账号管理" data-action="新增" data-date="2026-06-22">
+            <tr data-page="账号管理" data-action="添加" data-date="2026-06-22">
               <td style="padding-left:14px;color:#666;font-size:12px;white-space:nowrap">2026-06-22 09:15</td>
               <td style="color:#333">admin</td>
               <td><span class="badge badge-normal">账号管理</span></td>
-              <td><span class="badge badge-active">新增</span></td>
+              <td><span class="badge badge-active">添加</span></td>
               <td style="color:#333;font-size:12px">operator01</td>
               <td style="color:#666;font-size:12px;line-height:1.8">
                 <div>账号：operator01</div>
@@ -1359,7 +1358,7 @@
               <td><span class="badge badge-vip">编辑</span></td>
               <td style="color:#333;font-size:12px">一般管理员</td>
               <td style="color:#666;font-size:12px;line-height:1.8">
-                <div>可访问菜单：新增「限制设置」</div>
+                <div>可访问菜单：添加「限制设置」</div>
               </td>
             </tr>
             <tr data-page="TG用户列表" data-action="编辑" data-date="2026-06-21">
@@ -1386,7 +1385,7 @@
                 <div>充电宝-05</div>
               </td>
               <td style="color:#666;font-size:12px;line-height:1.8">
-                <div>下分（提现）：开启 → 关闭</div>
+                <div>下分：开启 → 关闭</div>
               </td>
             </tr>
             <tr data-page="限制设置" data-action="编辑" data-date="2026-06-20">
@@ -1457,7 +1456,7 @@
               <td><span class="badge badge-vip">超级管理员</span></td>
               <td style="color:#666;font-size:12px">2026-06-19 09:12</td>
               <td style="color:#666;font-size:12px">2026-01-01 00:00</td>
-              <td style="color:#666;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td>
                 <div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
               </td>
@@ -1498,7 +1497,7 @@
         </div>
       </div>
       <div class="action-bar">
-        <button class="btn" style="background:#fff" onclick="openRoleModal()"><i class="ti ti-plus"></i> 新增角色</button>
+        <button class="btn" style="background:#fff" onclick="openRoleModal()"><i class="ti ti-plus"></i> 添加角色</button>
       </div>
       <div class="table-card">
         <table class="data-table">
@@ -1515,8 +1514,8 @@
             <tr data-role-id="super">
               <td style="padding-left:14px;font-weight:500;color:#333">超级管理员</td>
               <td style="color:#666;font-size:12px">全部权限，不可编辑</td>
-              <td style="color:#666;font-size:12px">—</td>
-              <td style="color:#666;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td><span style="color:#999;font-size:12px">系统内置，不可修改</span></td>
             </tr>
             <tr data-role-id="general">
@@ -1634,11 +1633,11 @@ function showPage(id, navEl) {
 
 // ── 站点功能设置：数据驱动配置 ──
 // 站点数量可能很多（如充电宝类别下有 40 个），所以按类别分页展示，避免表格过长。
-// 以后新增功能，只要在 SITE_FEATURES 数组里加一项即可，每个类别的表格都会自动多一列。
-// 以后新增类别或站点，只要改 SITE_CATEGORIES（定义在下方）即可，这里不用改。
+// 以后添加功能，只要在 SITE_FEATURES 数组里加一项即可，每个类别的表格都会自动多一列。
+// 以后添加类别或站点，只要改 SITE_CATEGORIES（定义在下方）即可，这里不用改。
 const SITE_FEATURES = [
-  { key: 'deposit',  label: '上分（充值）' },
-  { key: 'withdraw', label: '下分（提现）' },
+  { key: 'deposit',  label: '上分' },
+  { key: 'withdraw', label: '下分' },
 ];
 
 // 权限数据：siteId -> { featureKey: boolean }（实际应来自后端）
@@ -1783,7 +1782,7 @@ setInterval(updateClock, 1000);
 
 // ── 全局站点数据：类别 → 站点 ──
 // 业务上"站点"之上还有一层类别（充电宝/交易所/股票），数量差异很大（40 / 4 / 2）
-// 以后新增类别或站点，只需要改这里的数据，不用动任何 HTML/UI 逻辑
+// 以后添加类别或站点，只需要改这里的数据，不用动任何 HTML/UI 逻辑
 const SITE_CATEGORIES = [
   {
     id: 'powerbank',
@@ -2046,7 +2045,7 @@ document.addEventListener('click', function(e) {
 // ── 角色管理 ──
 // 所有菜单项定义，key 对应 showPage 的 id，label 显示在弹窗里
 // ── 权限菜单定义：分组 → 菜单 → 功能细项 ──
-// 现在每个菜单下先只开放「查询」功能；后续新增「新增/编辑/删除」等细项时，
+// 现在每个菜单下先只开放「查询」功能；后续添加「添加/编辑/删除」等细项时，
 // 只需在对应菜单的 actions 数组里加一项，弹窗会自动展示。
 const MENU_GROUPS = [
   {
@@ -2119,7 +2118,7 @@ function openRoleModal(roleKey) {
   _editingRoleKey = roleKey || null;
   var role = roleKey ? ROLES[roleKey] : null;
 
-  document.getElementById('role-modal-title').textContent = role ? '编辑角色权限' : '新增角色';
+  document.getElementById('role-modal-title').textContent = role ? '编辑角色权限' : '添加角色';
   document.getElementById('role-name-input').value = role ? role.name : '';
   document.getElementById('role-name-input').disabled = !!(role && role.builtin);
   document.getElementById('role-desc-input').value = role ? role.desc : '';
@@ -2429,10 +2428,16 @@ function closeOrderDetail() {
 function testSiteUrl() {
   var url = document.getElementById('ss-url').value.trim();
   var resultEl = document.getElementById('ss-url-result');
-  if (!url) { alert('请先填写 URL'); return; }
 
-  // 显示测试中状态
   resultEl.style.display = 'block';
+
+  if (!url) {
+    resultEl.style.background = '#F4F4F5';
+    resultEl.style.color = '#909399';
+    resultEl.textContent = '— 请先填写 URL';
+    return;
+  }
+
   resultEl.style.background = '#F4F4F5';
   resultEl.style.color = '#909399';
   resultEl.textContent = '⏳ 测试中...';
@@ -2566,7 +2571,7 @@ function deleteSiteSetting(btn) {
   openConfirmModal('确定删除站点「' + name + '」？', function() { row.remove(); });
 }
 
-// ── 批量新增站点 ──
+// ── 批量添加站点 ──
 function openBatchSiteModal() {
   document.getElementById('bs-product').value = '';
   document.getElementById('bs-site-list').innerHTML = '<span style="color:#C0C4CC;font-size:12px;line-height:24px">请先选择产品别</span>';
@@ -2663,9 +2668,16 @@ function testBsUrl(btn) {
   var urlInput = row.querySelector('.bs-url-input');
   var resultEl = row.querySelector('.bs-url-result');
   var url = urlInput.value.trim();
-  if (!url) { alert('请先填写 URL'); return; }
 
   resultEl.style.display = 'block';
+
+  if (!url) {
+    resultEl.style.background = '#F4F4F5';
+    resultEl.style.color = '#909399';
+    resultEl.textContent = '— 请先填写 URL';
+    return;
+  }
+
   resultEl.style.background = '#F4F4F5';
   resultEl.style.color = '#909399';
   resultEl.textContent = '⏳ 测试中...';
@@ -2935,7 +2947,7 @@ function writeOplog(page, action, target, detail) {
   var pad = function(n) { return String(n).padStart(2, '0'); };
   var dateStr = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
   var timeStr = dateStr + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-  var actionClass = action === '新增' ? 'badge-active' : action === '删除' ? 'badge-block' : 'badge-vip';
+  var actionClass = action === '添加' ? 'badge-active' : action === '删除' ? 'badge-block' : 'badge-vip';
   var tr = document.createElement('tr');
   tr.dataset.page = page;
   tr.dataset.action = action;
@@ -3363,7 +3375,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <div id="role-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9999;">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:6px;width:420px;box-shadow:0 4px 24px rgba(0,0,0,0.18);overflow:hidden">
     <div style="padding:14px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center">
-      <span id="role-modal-title" style="font-size:14px;font-weight:600;color:#333">新增角色</span>
+      <span id="role-modal-title" style="font-size:14px;font-weight:600;color:#333">添加角色</span>
       <span onclick="closeRoleModal()" style="cursor:pointer;color:#999;font-size:20px;line-height:1">&times;</span>
     </div>
     <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
@@ -3405,7 +3417,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <span onclick="closeAccountModal()" style="cursor:pointer;color:#999;font-size:20px;line-height:1">&times;</span>
     </div>
     <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
-      <!-- 新增时：可编辑账号输入框；编辑时：只读显示账号 -->
+      <!-- 添加时：可编辑账号输入框；编辑时：只读显示账号 -->
       <div id="account-field-account">
         <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>账号</label>
         <input id="account-input-account" class="fi" style="width:100%" placeholder="请输入账号">
@@ -3609,11 +3621,11 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- ── 批量新增站点弹窗 ── -->
+<!-- ── 批量添加站点弹窗 ── -->
 <div id="batch-site-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9999;">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:6px;width:580px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 4px 24px rgba(0,0,0,0.18);overflow:hidden">
     <div style="padding:14px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
-      <span style="font-size:14px;font-weight:600;color:#333">批量新增站点</span>
+      <span style="font-size:14px;font-weight:600;color:#333">批量添加站点</span>
       <span onclick="closeBatchSiteModal()" style="cursor:pointer;color:#999;font-size:20px;line-height:1">&times;</span>
     </div>
     <div style="padding:16px 18px 8px;flex-shrink:0">
