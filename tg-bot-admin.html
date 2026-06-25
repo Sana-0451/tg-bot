@@ -3151,25 +3151,37 @@ function changeStatus(btn, tgid) {
 function batchToggleStatus() {
   var selected = Array.from(document.querySelectorAll('.user-checkbox:checked'));
   if (!selected.length) { alert('请先勾选用户'); return; }
+  // 统计当前选中用户的状态分布，显示在弹窗里
+  var enabledCount  = selected.filter(function(cb) {
+    var badge = cb.closest('tr').cells[8] && cb.closest('tr').cells[8].querySelector('[data-status]');
+    return badge && badge.getAttribute('data-status') === 'normal';
+  }).length;
+  var blockedCount = selected.length - enabledCount;
+  document.getElementById('batch-status-count').textContent =
+    '已选 ' + selected.length + ' 位用户（' + enabledCount + ' 启用 / ' + blockedCount + ' 禁用）';
+  document.getElementById('batch-status-modal').style.display = 'block';
+}
+
+function applyBatchStatus(target) {
+  var selected = Array.from(document.querySelectorAll('.user-checkbox:checked'));
+  var label = target === 'normal' ? '启用' : '禁用';
+  var cls   = target === 'normal' ? 'badge badge-active' : 'badge badge-block';
   selected.forEach(function(cb) {
-    var row = cb.closest('tr');
-    // 列顺序：0=checkbox,1=用户ID,2=TG用户名,3=名称,4=账号类型,5=邮箱,6=手机号,7=加入时间,8=状态,9=操作
-    var statusTd = row.cells[8];
+    var statusTd = cb.closest('tr').cells[8];
     if (!statusTd) return;
     var badge = statusTd.querySelector('[data-status]');
     if (!badge) return;
-    if (badge.getAttribute('data-status') === 'blocked') {
-      badge.setAttribute('data-status', 'normal');
-      badge.textContent = '启用';
-      badge.className = 'badge badge-active';
-    } else {
-      badge.setAttribute('data-status', 'blocked');
-      badge.textContent = '禁用';
-      badge.className = 'badge badge-block';
-    }
+    badge.setAttribute('data-status', target);
+    badge.textContent = label;
+    badge.className = cls;
     cb.checked = false;
   });
   document.getElementById('select-all').checked = false;
+  document.getElementById('batch-status-modal').style.display = 'none';
+}
+
+function closeBatchStatusModal() {
+  document.getElementById('batch-status-modal').style.display = 'none';
 }
 
 function batchGoogleAuth() {
@@ -3617,6 +3629,31 @@ document.addEventListener('DOMContentLoaded', () => {
     <div style="padding:8px 18px 16px;display:flex;justify-content:flex-end;gap:8px">
       <button class="btn" onclick="closeSiteSettingModal()">取消</button>
       <button class="btn btn-green" onclick="confirmSiteSettingModal()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 批量启用/禁用弹窗 ── -->
+<div id="batch-status-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:10000;">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:6px;width:360px;box-shadow:0 4px 24px rgba(0,0,0,0.18);overflow:hidden">
+    <div style="padding:14px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:14px;font-weight:600;color:#333">批量修改状态</span>
+      <span onclick="closeBatchStatusModal()" style="cursor:pointer;color:#999;font-size:20px;line-height:1">&times;</span>
+    </div>
+    <div style="padding:20px 18px 16px">
+      <p id="batch-status-count" style="font-size:13px;color:#606266;margin:0 0 16px"></p>
+      <p style="font-size:13px;color:#333;font-weight:500;margin:0 0 12px">将所选用户统一设为：</p>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-green" style="flex:1;justify-content:center" onclick="applyBatchStatus('normal')">
+          ✓ 启用
+        </button>
+        <button class="btn btn-red" style="flex:1;justify-content:center" onclick="applyBatchStatus('blocked')">
+          ✕ 禁用
+        </button>
+      </div>
+    </div>
+    <div style="padding:0 18px 14px;display:flex;justify-content:flex-end">
+      <button class="btn" onclick="closeBatchStatusModal()">取消</button>
     </div>
   </div>
 </div>
