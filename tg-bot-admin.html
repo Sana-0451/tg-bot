@@ -903,7 +903,8 @@
               <th>金额</th>
               <th>申请时间</th>
               <th>完成时间</th>
-              <th>传送状态</th>
+              <th>操作人</th>
+              <th>订单状态</th>
               <th>备注</th>
             </tr>
           </thead>
@@ -917,6 +918,7 @@
               <td style="color:#55C92A;font-weight:500">¥500</td>
               <td style="color:#666;font-size:12px">2026-06-18 14:30</td>
               <td style="color:#666;font-size:12px">2026-06-18 14:32</td>
+              <td style="color:#666;font-size:12px">admin01</td>
               <td><span class="badge badge-active">成功</span></td>
               <td style="color:#ccc;font-size:12px">—</td>
             </tr>
@@ -928,6 +930,7 @@
               <td style="color:#666">208374</td>
               <td style="color:#55C92A;font-weight:500">¥1000</td>
               <td style="color:#666;font-size:12px">2026-06-18 13:45</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#ccc;font-size:12px">—</td>
               <td><span class="badge" style="background:#FFF3E0;color:#E6A23C">申请中</span></td>
               <td style="color:#ccc;font-size:12px">—</td>
@@ -941,6 +944,7 @@
               <td style="color:#55C92A;font-weight:500">¥200</td>
               <td style="color:#666;font-size:12px">2026-06-18 12:15</td>
               <td style="color:#666;font-size:12px">2026-06-18 12:17</td>
+              <td style="color:#666;font-size:12px">admin02</td>
               <td><span class="badge badge-block">失败</span></td>
               <td style="color:#F56C6C;font-size:12px">站点拒绝：余额上限已达</td>
             </tr>
@@ -952,6 +956,7 @@
               <td style="color:#666">519042</td>
               <td style="color:#55C92A;font-weight:500">¥800</td>
               <td style="color:#666;font-size:12px">2026-06-18 10:05</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#ccc;font-size:12px">—</td>
               <td><span class="badge badge-block">失败</span></td>
               <td style="color:#F56C6C;font-size:12px">服务器无回应（连接超时）</td>
@@ -1002,7 +1007,8 @@
               <th>金额</th>
               <th>申请时间</th>
               <th>完成时间</th>
-              <th>传送状态</th>
+              <th>操作人</th>
+              <th>订单状态</th>
               <th>备注</th>
             </tr>
           </thead>
@@ -1016,7 +1022,8 @@
               <td style="color:#F56C6C;font-weight:500">¥300</td>
               <td style="color:#666;font-size:12px">2026-06-18 14:20</td>
               <td style="color:#666;font-size:12px">2026-06-18 14:25</td>
-              <td><span class="badge badge-active">传送成功</span></td>
+              <td style="color:#666;font-size:12px">admin01</td>
+              <td><span class="badge badge-active">成功</span></td>
               <td style="color:#ccc;font-size:12px">—</td>
             </tr>
             <tr data-site="ST02" data-date="2026-06-18">
@@ -1027,6 +1034,7 @@
               <td style="color:#666">631928</td>
               <td style="color:#F56C6C;font-weight:500">¥600</td>
               <td style="color:#666;font-size:12px">2026-06-18 09:40</td>
+              <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#ccc;font-size:12px">—</td>
               <td><span class="badge badge-block">失败</span></td>
               <td style="color:#F56C6C;font-size:12px">HTTP 502 Bad Gateway</td>
@@ -1243,6 +1251,14 @@
         <div class="card-header">
           <span class="card-title">站点功能设置</span>
           <span style="font-size:12px;color:#999">设定各站点可使用的机器人功能，未开放会收到"功能未开放"的提示</span>
+        </div>
+        <div class="filter-panel" style="margin-bottom:12px">
+          <div class="filter-row">
+            <input class="fi" style="width:200px" id="site-search-name" placeholder="搜索站点名称...">
+            <input class="fi" style="width:260px" id="site-search-url" placeholder="搜索 URL...">
+            <button class="btn btn-green" onclick="searchSiteSettings()"><i class="ti ti-search"></i> 搜索</button>
+            <button class="btn btn-teal" onclick="resetSiteSettings()"><i class="ti ti-rotate-clockwise"></i> 重置</button>
+          </div>
         </div>
         <div class="action-bar" style="margin-bottom:12px">
           <button class="btn" style="background:#fff" onclick="openBatchSiteModal()"><i class="ti ti-plus"></i> 批量添加</button>
@@ -1461,7 +1477,7 @@
                 <div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
               </td>
               <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 修改</span>
+                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 修改#9998; 编辑</span>
                 <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal('admin')">&#9998; 密码重制</span>
                 <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>
               </td>
@@ -1477,7 +1493,7 @@
                 <div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
               </td>
               <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 修改</span>
+                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 修改#9998; 编辑</span>
                 <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal('operator01')">&#9998; 密码重制</span>
                 <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>
               </td>
@@ -2406,7 +2422,7 @@ function openOrderDetail(d) {
     row('手续费', d.fee) +
     row('申请时间', d.applyTime) +
     row('完成时间', d.finishTime) +
-    row('传送状态', d.status, statusColor) +
+    row('订单状态', d.status, statusColor) +
     (d.fail ? row('失败原因', d.fail, '#F56C6C') : '') +
     '<div style="margin-top:12px;padding-top:12px;border-top:2px solid #F0F2F5;font-size:12px;color:#909399;font-weight:600;margin-bottom:4px">账户变动</div>' +
     row('账变金额', d.amount ? (d.type === 'deposit' ? '+' : '-') + d.amount + ' ' + d.currency : '', d.type === 'deposit' ? '#55C92A' : '#F56C6C') +
@@ -2477,18 +2493,28 @@ function openSiteSettingModal(row) {
   var isEdit = !!row;
   document.getElementById('site-setting-modal-title').textContent = isEdit ? '编辑站点' : '添加站点';
 
+  var productSel  = document.getElementById('ss-product');
+  var productText = document.getElementById('ss-product-text');
+  var siteNumRow  = document.getElementById('ss-site-num-row');
   if (isEdit) {
     var cells = row.cells;
     var product = cells[0].textContent.trim();
     var siteName = cells[1].textContent.trim();
     var url = cells[2].textContent.trim();
-    document.getElementById('ss-product').value = product;
-    onSsProductChange();
-    document.getElementById('ss-site-name').value = siteName;
+    productSel.style.display = 'none';
+    productText.textContent = product;
+    productText.style.display = 'block';
+    siteNumRow.style.display = 'none';
+    document.getElementById('ss-site-name-row').style.display = '';
+    document.getElementById('ss-site-name-edit').value = siteName;
     document.getElementById('ss-url').value = url;
     document.getElementById('ss-toggle-deposit').classList.toggle('on', cells[3].querySelector('.toggle-switch.on') !== null);
     document.getElementById('ss-toggle-withdraw').classList.toggle('on', cells[4].querySelector('.toggle-switch.on') !== null);
   } else {
+    productSel.style.display = '';
+    productText.style.display = 'none';
+    siteNumRow.style.display = '';
+    document.getElementById('ss-site-name-row').style.display = 'none';
     document.getElementById('ss-product').value = '';
     document.getElementById('ss-site-num').innerHTML = '<option value="">请先选择产品</option>';
     document.getElementById('ss-site-name').value = '';
@@ -2527,8 +2553,13 @@ function onSsSiteNumChange() {
 }
 
 function confirmSiteSettingModal() {
-  var product = document.getElementById('ss-product').value;
-  var siteName = document.getElementById('ss-site-name').value.trim();
+  var isEdit = !!_editingSiteRow;
+  var product  = isEdit
+    ? document.getElementById('ss-product-text').textContent.trim()
+    : document.getElementById('ss-product').value;
+  var siteName = isEdit
+    ? document.getElementById('ss-site-name-edit').value.trim()
+    : document.getElementById('ss-site-name').value.trim();
   var url = document.getElementById('ss-url').value.trim();
   if (!product) { alert('请选择产品别'); return; }
   if (!siteName) { alert('请填写站点名称'); return; }
@@ -2563,6 +2594,25 @@ function confirmSiteSettingModal() {
     tbody.appendChild(tr);
   }
   closeSiteSettingModal();
+}
+
+function searchSiteSettings() {
+  var name = document.getElementById('site-search-name').value.trim().toLowerCase();
+  var url  = document.getElementById('site-search-url').value.trim().toLowerCase();
+  document.querySelectorAll('#site-setting-body tr').forEach(function(row) {
+    var rowName = (row.cells[1] ? row.cells[1].textContent : '').toLowerCase();
+    var rowUrl  = (row.cells[2] ? row.cells[2].textContent : '').toLowerCase();
+    var match = (!name || rowName.includes(name)) && (!url || rowUrl.includes(url));
+    row.style.display = match ? '' : 'none';
+  });
+}
+
+function resetSiteSettings() {
+  document.getElementById('site-search-name').value = '';
+  document.getElementById('site-search-url').value  = '';
+  document.querySelectorAll('#site-setting-body tr').forEach(function(row) {
+    row.style.display = '';
+  });
 }
 
 function deleteSiteSetting(btn) {
@@ -2824,7 +2874,7 @@ function openEditAccountModal(btn) {
   _editingAccountRow = row;
   var account = row.cells[0].textContent.trim();
   var name = row.cells[1].textContent.trim();
-  document.getElementById('account-modal-title').textContent = '修改账号';
+  document.getElementById('account-modal-title').textContent = '编辑账号';
   // 隐藏可编辑账号输入框，显示只读账号
   document.getElementById('account-field-account').style.display = 'none';
   document.getElementById('account-field-account-readonly').style.display = '';
@@ -2874,7 +2924,7 @@ function confirmAccountModal() {
       '<td style="color:#666;font-size:12px">admin</td>' +
       '<td><div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div></td>' +
       '<td>' +
-        '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 修改</span>' +
+        '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 修改#9998; 编辑</span>' +
         '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + account + '\')">&#9998; 密码重制</span>' +
         '<span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>' +
       '</td>';
@@ -3110,7 +3160,7 @@ function confirmAddModal() {
     '<td><span class="badge badge-active" data-status="normal">启用</span></td>' +
     '<td style="color:#666;font-size:12px">' + remark + '</td>' +
     '<td>' +
-      '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + tgid + '\')">&#9998; 修改密码</span>' +
+      '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + tgid + '\')">&#9998; 修改#9998; 编辑密码</span>' +
       '<span style="color:#909399;font-size:12px;cursor:pointer;margin-right:10px" onclick="changeStatus(this,\'' + tgid + '\')">&#9998; 禁用</span>' +
       '<span style="color:#409EFF;font-size:12px;cursor:pointer">&#9998; 谷歌验证</span>' +
     '</td>';
@@ -3421,7 +3471,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- ── 添加/修改账号弹窗 ── -->
+<!-- ── 添加/编辑账号弹窗 ── -->
 <div id="account-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9999;">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:6px;width:400px;box-shadow:0 4px 24px rgba(0,0,0,0.18);overflow:hidden">
     <div style="padding:14px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center">
@@ -3596,13 +3646,18 @@ document.addEventListener('DOMContentLoaded', () => {
           <option value="股票">股票</option>
           <option value="充电宝">充电宝</option>
         </select>
+        <span id="ss-product-text" style="display:none;font-size:13px;color:#333;padding:6px 10px;background:#f5f7fa;border:1px solid #dcdfe6;border-radius:3px;display:none;width:100%;box-sizing:border-box"></span>
       </div>
-      <div>
+      <div id="ss-site-num-row">
         <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>站点</label>
         <select id="ss-site-num" class="fi" style="width:100%;margin-bottom:6px" onchange="onSsSiteNumChange()">
           <option value="">请先选择产品</option>
         </select>
         <input id="ss-site-name" class="fi" style="width:100%" placeholder="站点名称（可修改，如「交易所-01」）">
+      </div>
+      <div id="ss-site-name-row" style="display:none">
+        <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>站点名称</label>
+        <input id="ss-site-name-edit" class="fi" style="width:100%" placeholder="站点名称">
       </div>
       <div>
         <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>URL</label>
