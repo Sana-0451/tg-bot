@@ -589,9 +589,13 @@
   .pagination {
     padding: 9px 14px; border-top: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 6px;
   }
 
   .page-info { font-size: 12px; color: var(--text-muted); }
+
+  .page-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
   .page-btns { display: flex; gap: 4px; }
 
   .page-btn {
@@ -603,6 +607,26 @@
 
   .page-btn:hover { background: #f5f5f5; }
   .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .page-size-select {
+    height: 26px; padding: 0 22px 0 8px; font-size: 12px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: #fff; color: var(--text); cursor: pointer;
+    font-family: inherit; outline: none;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 7px center;
+  }
+  .page-size-select:hover { border-color: #aaa; }
+  .page-size-select:focus { border-color: #409EFF; box-shadow: 0 0 0 2px rgba(64,158,255,0.1); }
+
+  .page-jump { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted); }
+  .page-jump-input {
+    width: 46px; height: 26px; padding: 0 6px; text-align: center;
+    font-size: 12px; border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: inherit; outline: none; background: #fff; color: var(--text);
+  }
+  .page-jump-input:focus { border-color: #409EFF; box-shadow: 0 0 0 2px rgba(64,158,255,0.1); }
 
   @media (max-width: 900px) {
     .stat-row, .metrics { grid-template-columns: repeat(2,1fr); }
@@ -860,11 +884,21 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 12,847 名用户</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -960,10 +994,20 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 4 条记录</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -1035,10 +1079,20 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 4 条记录</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -1228,10 +1282,20 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 2 条记录</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -1300,10 +1364,20 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 3 条记录</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -1424,10 +1498,20 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 6 条记录</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -1437,7 +1521,7 @@
     <div class="page" id="page-admin">
       <div class="filter-panel">
         <div class="filter-row">
-          <input class="fi" style="width:200px" id="admin-search-account" placeholder="请输入账号...">
+          <input class="fi" style="width:200px" id="admin-search-account" placeholder="请输入账号或名称...">
           <button class="btn btn-green" onclick="searchAdmins()"><i class="ti ti-search"></i> 搜索</button>
           <button class="btn btn-teal" onclick="resetAdminSearch()"><i class="ti ti-rotate-clockwise"></i> 重置</button>
         </div>
@@ -1496,10 +1580,20 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 2 条记录</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -1550,10 +1644,20 @@
         </table>
         <div class="pagination">
           <span class="page-info">共 2 条记录</span>
-          <div class="page-btns">
-            <button class="page-btn">上一页</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">下一页</button>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
           </div>
         </div>
       </div>
@@ -1563,6 +1667,93 @@
 </div><!-- /main -->
 
 <script>
+/* ── 分页：每页条数 & 跳页 ── */
+function onPageSizeChange(sel) {
+  const pagination = sel.closest('.pagination');
+  const info = pagination.querySelector('.page-info');
+  const size = parseInt(sel.value);
+  // 从 page-info 里提取总数（支持带逗号的数字）
+  const match = info ? info.textContent.match(/[\d,]+/) : null;
+  const total = match ? parseInt(match[0].replace(/,/g, '')) : 0;
+  const totalPages = total > 0 ? Math.ceil(total / size) : 1;
+  // 重建页码按钮
+  rebuildPageBtns(pagination, 1, totalPages);
+  // 清空跳页输入
+  const jumpInput = pagination.querySelector('.page-jump-input');
+  if (jumpInput) jumpInput.value = '';
+}
+
+function onPageJump(e, input) {
+  if (e.key !== 'Enter') return;
+  const pagination = input.closest('.pagination');
+  const sel = pagination.querySelector('.page-size-select');
+  const info = pagination.querySelector('.page-info');
+  const size = sel ? parseInt(sel.value) : 20;
+  const match = info ? info.textContent.match(/[\d,]+/) : null;
+  const total = match ? parseInt(match[0].replace(/,/g, '')) : 0;
+  const totalPages = total > 0 ? Math.ceil(total / size) : 1;
+  let page = parseInt(input.value);
+  if (!page || page < 1) page = 1;
+  if (page > totalPages) page = totalPages;
+  input.value = page;
+  rebuildPageBtns(pagination, page, totalPages);
+}
+
+function rebuildPageBtns(pagination, current, totalPages) {
+  const btns = pagination.querySelector('.page-btns');
+  if (!btns) return;
+  // 生成页码序列（最多显示5个数字页，含省略号逻辑）
+  const pages = getPageNums(current, totalPages);
+  let html = `<button class="page-btn" onclick="pagerNav(this,-1)">‹</button>`;
+  pages.forEach(p => {
+    if (p === '…') {
+      html += `<button class="page-btn" style="cursor:default;border:none;background:none;color:#999">···</button>`;
+    } else {
+      html += `<button class="page-btn${p === current ? ' active' : ''}" onclick="pagerNav(this,${p})">${p}</button>`;
+    }
+  });
+  html += `<button class="page-btn" onclick="pagerNav(this,1)">›</button>`;
+  btns.innerHTML = html;
+}
+
+function getPageNums(cur, total) {
+  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+  const pages = [];
+  if (cur <= 4) {
+    for (let i = 1; i <= 5; i++) pages.push(i);
+    pages.push('…'); pages.push(total);
+  } else if (cur >= total - 3) {
+    pages.push(1); pages.push('…');
+    for (let i = total - 4; i <= total; i++) pages.push(i);
+  } else {
+    pages.push(1); pages.push('…');
+    for (let i = cur - 1; i <= cur + 1; i++) pages.push(i);
+    pages.push('…'); pages.push(total);
+  }
+  return pages;
+}
+
+function pagerNav(btn, target) {
+  const pagination = btn.closest('.pagination');
+  const sel = pagination.querySelector('.page-size-select');
+  const info = pagination.querySelector('.page-info');
+  const size = sel ? parseInt(sel.value) : 20;
+  const match = info ? info.textContent.match(/[\d,]+/) : null;
+  const total = match ? parseInt(match[0].replace(/,/g, '')) : 0;
+  const totalPages = total > 0 ? Math.ceil(total / size) : 1;
+  // 求当前页
+  const activBtn = pagination.querySelector('.page-btn.active');
+  const curPage = activBtn ? parseInt(activBtn.textContent) || 1 : 1;
+  let next = target;
+  if (btn.textContent === '‹') next = Math.max(1, curPage - 1);
+  if (btn.textContent === '›') next = Math.min(totalPages, curPage + 1);
+  if (next < 1) next = 1;
+  if (next > totalPages) next = totalPages;
+  rebuildPageBtns(pagination, next, totalPages);
+  const jumpInput = pagination.querySelector('.page-jump-input');
+  if (jumpInput) jumpInput.value = '';
+}
+
 const ICONS = {
   'layout-dashboard':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>',
   'users':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>',
@@ -1824,7 +2015,7 @@ const SITE_CATEGORIES = [
     sites: [
       { id: 'EX01', name: '交易所-01' },
       { id: 'EX02', name: '交易所-02' },
-      { id: 'EX03', name: '交易所-03' },
+      { id: 'EX03', name: '交易所-03', deleted: true },
       { id: 'EX04', name: '交易所-04' },
     ]
   },
@@ -1833,7 +2024,7 @@ const SITE_CATEGORIES = [
     name: '股票',
     sites: [
       { id: 'ST01', name: '股票-01' },
-      { id: 'ST02', name: '股票-02' },
+      { id: 'ST02', name: '股票-02', deleted: true },
     ]
   },
 ];
@@ -1945,23 +2136,43 @@ function renderSitePickerPanel(containerId) {
   let catListHtml = '';
   SITE_CATEGORIES.forEach(function(cat) {
     const active = cat.id === state.activeCat;
-    const selectedInCat = cat.sites.filter(function(s) { return state.selected.has(s.id); }).length;
+    const selectedInCat = cat.sites.filter(function(s) { return !s.deleted && state.selected.has(s.id); }).length;
+    const selectedDeletedInCat = cat.sites.filter(function(s) { return s.deleted && state.selected.has(s.id); }).length;
     catListHtml += '<div class="multi-site-cat-item' + (active ? ' active' : '') + '" onclick="switchSitePickerCat(\'' + containerId + '\', \'' + cat.id + '\')">' +
       '<span>' + cat.name + '</span>' +
       (selectedInCat > 0 ? '<span class="multi-site-cat-badge">' + selectedInCat + '</span>' : '') +
+      (selectedDeletedInCat > 0 ? '<span class="multi-site-cat-badge" style="background:#f0f0f0;color:#909399;margin-left:2px">' + selectedDeletedInCat + '↩</span>' : '') +
       '</div>';
   });
 
   const activeCat = getCategoryById(state.activeCat);
   let siteListHtml = '';
   if (activeCat) {
-    activeCat.sites.forEach(function(site) {
+    const normalSites  = activeCat.sites.filter(function(s) { return !s.deleted; });
+    const deletedSites = activeCat.sites.filter(function(s) { return  s.deleted; });
+    const inputType = state.mode === 'single' ? 'radio' : 'checkbox';
+
+    normalSites.forEach(function(site) {
       const checked = state.selected.has(site.id);
-      const inputType = state.mode === 'single' ? 'radio' : 'checkbox';
       siteListHtml += '<div class="multi-site-option" onclick="onSitePickerOptionClick(\'' + containerId + '\', \'' + site.id + '\', this)">' +
         '<input type="' + inputType + '" ' + (checked ? 'checked' : '') + ' style="pointer-events:none">' +
         '<span>' + site.name + '</span></div>';
     });
+
+    if (deletedSites.length > 0) {
+      siteListHtml += '<div style="display:flex;align-items:center;gap:6px;padding:6px 10px 4px;cursor:default">' +
+        '<div style="flex:1;height:1px;background:#EBEEF5"></div>' +
+        '<span style="font-size:11px;color:#C0C4CC;white-space:nowrap;flex-shrink:0">已删除</span>' +
+        '<div style="flex:1;height:1px;background:#EBEEF5"></div>' +
+        '</div>';
+      deletedSites.forEach(function(site) {
+        const checked = state.selected.has(site.id);
+        siteListHtml += '<div class="multi-site-option" style="opacity:0.55" onclick="onSitePickerOptionClick(\'' + containerId + '\', \'' + site.id + '\', this)">' +
+          '<input type="' + inputType + '" ' + (checked ? 'checked' : '') + ' style="pointer-events:none">' +
+          '<span style="color:#909399">' + site.name + '</span>' +
+          '<span style="font-size:10px;color:#F56C6C;margin-left:5px;flex-shrink:0">(已删除)</span></div>';
+      });
+    }
   }
 
   let footerHtml = '';
@@ -2020,21 +2231,32 @@ function onSitePickerOptionClick(containerId, siteId, el) {
   // 局部更新当前类别的角标计数，避免整个面板重渲染导致滚动位置跳动
   const cat = getCategoryById(state.activeCat);
   if (cat) {
-    const selectedInCat = cat.sites.filter(function(s) { return state.selected.has(s.id); }).length;
+    const selectedInCat        = cat.sites.filter(function(s) { return !s.deleted && state.selected.has(s.id); }).length;
+    const selectedDeletedInCat = cat.sites.filter(function(s) { return  s.deleted && state.selected.has(s.id); }).length;
     const catItems = document.querySelectorAll('#' + containerId + '-panel .multi-site-cat-item');
     const idx = SITE_CATEGORIES.findIndex(function(c) { return c.id === state.activeCat; });
     if (catItems[idx]) {
-      let badge = catItems[idx].querySelector('.multi-site-cat-badge');
+      // 蓝色角标：正常站点勾选数
+      const badges = catItems[idx].querySelectorAll('.multi-site-cat-badge');
+      let normalBadge = badges[0] && badges[0].style.background !== 'rgb(240, 240, 240)' ? badges[0] : null;
+      let deletedBadge = null;
+      badges.forEach(function(b) { if (b.style.background === 'rgb(240, 240, 240)') deletedBadge = b; else normalBadge = b; });
+
       if (selectedInCat > 0) {
-        if (!badge) {
-          badge = document.createElement('span');
-          badge.className = 'multi-site-cat-badge';
-          catItems[idx].appendChild(badge);
+        if (!normalBadge) { normalBadge = document.createElement('span'); normalBadge.className = 'multi-site-cat-badge'; catItems[idx].appendChild(normalBadge); }
+        normalBadge.textContent = selectedInCat;
+      } else if (normalBadge) { normalBadge.remove(); }
+
+      // 灰色角标：已删除站点勾选数
+      if (selectedDeletedInCat > 0) {
+        if (!deletedBadge) {
+          deletedBadge = document.createElement('span');
+          deletedBadge.className = 'multi-site-cat-badge';
+          deletedBadge.style.cssText = 'background:#f0f0f0;color:#909399;margin-left:2px';
+          catItems[idx].appendChild(deletedBadge);
         }
-        badge.textContent = selectedInCat;
-      } else if (badge) {
-        badge.remove();
-      }
+        deletedBadge.textContent = selectedDeletedInCat + '↩';
+      } else if (deletedBadge) { deletedBadge.remove(); }
     }
   }
 }
