@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>TG Bot Mockup — 互動版</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0A0D12;padding:24px 0}
+
+.wrap{max-width:460px;margin:0 auto}
+.section-title{color:#6FA8DC;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+.callout{padding:11px 13px;background:#101722;border:1px solid #1E2A3A;border-radius:10px;color:#9AB0C4;font-size:12.5px;line-height:1.65;margin-bottom:18px}
+.callout b{color:#fff}
+
+.phone{background:#0A0D12;border:1px solid #171D28;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;height:560px}
+.tg-hdr{background:#121822;display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #1A2130;flex-shrink:0}
+.hdr-av{width:34px;height:34px;border-radius:50%;background:#7C6EE0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.hdr-name{font-size:14px;font-weight:600;color:#fff}
+.hdr-sub{font-size:11px;color:#5A6478}
+
+.feed{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.feed::-webkit-scrollbar{width:0}
+
+.row{display:flex;gap:8px;align-items:flex-end}
+.row.right{justify-content:flex-end}
+.avatar{width:30px;height:30px;border-radius:50%;background:#7C6EE0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;flex-shrink:0}
+
+.card{max-width:82%;border-radius:16px;padding:10px 13px 8px;font-size:13.5px;line-height:1.55;color:#EDEFF2;transition:opacity .12s ease}
+.card.left{background:#161B24;border-bottom-left-radius:4px}
+.card.right{background:#3B6BA8;border-bottom-right-radius:4px}
+.card.fading{opacity:.35}
+.card.stale{opacity:.6}
+.sender{font-size:12.5px;font-weight:700;margin-bottom:4px}
+.sender.violet{color:#9C8CEE}
+.sender.blue{color:#EAF1FB}
+
+.quote{border-left:3px solid #D65B6B;background:rgba(255,255,255,0.03);border-radius:4px;padding:4px 8px;margin-bottom:7px}
+.quote .qname{color:#E4677A;font-weight:700;font-size:12px;margin-bottom:1px}
+.quote .qtext{color:#E7E9EC;font-size:13px}
+
+.i-icon{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#3A4152;color:#B7BECB;font-size:10px;font-weight:700;margin:0 3px;vertical-align:middle}
+.mono-block{font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;color:#8FA3B8;margin:6px 0 4px}
+.warn-row{color:#E0A64A;font-size:13px;margin-bottom:2px}
+.tag-ok{display:inline-block;background:#173322;color:#5FC583;font-size:11px;padding:1px 8px;border-radius:4px;margin-right:4px}
+.tag-no{display:inline-block;background:#331A1A;color:#E0685F;font-size:11px;padding:1px 8px;border-radius:4px;margin-right:4px}
+
+.meta{display:flex;justify-content:flex-end;align-items:center;gap:3px;font-size:10.5px;color:#5A6478;margin-top:2px}
+.card.right .meta{color:#BFD8F2}
+.edited{font-style:italic;opacity:.85}
+.tick{color:#6FA8DC}
+
+.kbd{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.kbd-row{display:flex;gap:4px}
+.kbd-btn{flex:1;background:#232A38;color:#DCE1E8;font-size:12px;padding:8px 6px;border-radius:8px;text-align:center;white-space:nowrap;cursor:pointer;border:none;font-family:inherit;transition:background .1s}
+.kbd-btn:hover{background:#2C3444}
+.kbd-btn:active{background:#3A4459}
+.kbd-nav{display:flex;gap:4px}
+.kbd-nav .kbd-btn{background:#1B212C;color:#6E7A8C;font-size:10.5px;padding:8px 4px}
+.kbd-cancel{background:#2C1919;color:#D9645A;font-size:12px;padding:8px;border-radius:8px;text-align:center;cursor:pointer;border:none;width:100%;font-family:inherit}
+.kbd-cancel:hover{background:#391F1F}
+
+.inputbar{flex-shrink:0;display:flex;gap:8px;align-items:center;padding:10px 12px;background:#121822;border-top:1px solid #1A2130}
+.inputbar input{flex:1;background:#1B212C;border:1px solid #232B3A;border-radius:20px;padding:9px 14px;color:#EDEFF2;font-size:13px;font-family:inherit;outline:none}
+.inputbar input:disabled{color:#4A5568}
+.inputbar input::placeholder{color:#4A5568}
+.sendbtn{width:34px;height:34px;border-radius:50%;background:#3B6BA8;border:none;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.sendbtn:disabled{background:#1E2733;color:#4A5568;cursor:not-allowed}
+
+.controls{display:flex;justify-content:center;margin-top:14px}
+.reset-btn{background:#161B24;color:#8FA3B8;border:1px solid #232B3A;font-size:12px;padding:8px 16px;border-radius:20px;cursor:pointer;font-family:inherit}
+.reset-btn:hover{background:#1B212C}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="section-title">✅ 互動版 — 實際點按鈕，看訊息如何被「編輯」</div>
+  <div class="callout">
+    點下方按鈕操作，觀察 Bot 的訊息<b>不會新增，只會被改寫</b>。只有輸入帳號那步驟需要打字（Telegram 按鈕無法捕捉文字），才會多一則你的訊息。
+  </div>
+
+  <div class="phone">
+    <div class="tg-hdr">
+      <div class="hdr-av">Bot</div>
+      <div>
+        <div class="hdr-name">CreditBot</div>
+        <div class="hdr-sub" id="hdrSub">線上</div>
+      </div>
+    </div>
+
+    <div class="feed" id="feed"></div>
+
+    <div class="inputbar">
+      <input id="txtInput" type="text" placeholder="請使用上方按鈕操作" disabled>
+      <button class="sendbtn" id="sendBtn" disabled onclick="submitInput()">➤</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="reset-btn" onclick="restart()">↻ 重置 Demo</button>
+  </div>
+
+</div>
+
+<script>
+const state = { step:'menu', type:null, product:null, station:null, minute:2, history:[], freshCard:false };
+
+function chosenLine(){
+  const parts=[];
+  if(state.type) parts.push(state.type);
+  if(state.product) parts.push(state.product);
+  if(state.station) parts.push(state.station);
+  return parts.join(' · ');
+}
+function time(){ return '14:0'+state.minute; }
+function bump(){ state.minute = Math.min(state.minute+1,9); }
+
+function pushHistory(){ state.history.push(JSON.parse(JSON.stringify({step:state.step,type:state.type,product:state.product,station:state.station}))); }
+
+function goBack(){
+  if(state.history.length===0) return;
+  const prev = state.history.pop();
+  state.step=prev.step; state.type=prev.type; state.product=prev.product; state.station=prev.station;
+  transition();
+}
+function goHome(){
+  if(state.step==='result_ok' || state.step==='result_fail') state.freshCard = true;
+  pushHistory();
+  state.step='menu'; state.type=null; state.product=null; state.station=null;
+  transition();
+}
+function cancel(){
+  state.step='cancelled';
+  transition();
+}
+function selectType(v){
+  pushHistory();
+  state.type=v; state.step='product';
+  transition();
+}
+function selectProduct(v){
+  pushHistory();
+  state.product=v; state.step='station';
+  transition();
+}
+function selectStation(v){
+  pushHistory();
+  state.station=v; state.step='input';
+  transition();
+}
+function retry(){
+  state.step='input';
+  state.freshCard = true;
+  transition();
+}
+
+let lastUserInput='';
+function submitInput(){
+  const val = document.getElementById('txtInput').value.trim();
+  if(!val) return;
+  lastUserInput = val;
+  document.getElementById('txtInput').value='';
+  addUserBubble(val);
+  bump();
+  setTimeout(()=>{
+    const ok = Math.random() < 0.75;
+    state.step = ok ? 'result_ok' : 'result_fail';
+    state.freshCard = true;
+    transition();
+  }, 350);
+}
+
+function addUserBubble(text){
+  const feed = document.getElementById('feed');
+  const row = document.createElement('div');
+  row.className='row right';
+  row.innerHTML = `<div class="card right"><div class="sender blue">操作員A</div>${escapeHtml(text)}<div class="meta">${time()} <span class="tick">✓✓</span></div></div>`;
+  feed.appendChild(row);
+  feed.scrollTop = feed.scrollHeight;
+}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function transition(){
+  render();
+}
+
+let cardEditCount = 0;
+
+function render(){
+  bump();
+
+  let inner = '';
+  let inputEnabled = false;
+  let inputPlaceholder = '請使用上方按鈕操作';
+
+  if(state.step==='menu'){
+    inner = `
+      <span class="i-icon">i</span>請選擇操作類型
+      <div class="kbd">
+        <div class="kbd-row">
+          <button class="kbd-btn" onclick="selectType('上分')">＋ 上分</button>
+          <button class="kbd-btn" onclick="selectType('下分')">－ 下分</button>
+        </div>
+        <button class="kbd-cancel" onclick="cancel()">✕ 取消</button>
+      </div>`;
+  } else if(state.step==='product'){
+    inner = `
+      <div class="quote"><div class="qname">已選擇</div><div class="qtext">${chosenLine()}</div></div>
+      <span class="i-icon">i</span>請選擇產品別
+      <div class="kbd">
+        <div class="kbd-row">
+          <button class="kbd-btn" onclick="selectProduct('交易所')">交易所</button>
+          <button class="kbd-btn" onclick="selectProduct('股票')">股票</button>
+        </div>
+        <div class="kbd-row">
+          <button class="kbd-btn" onclick="selectProduct('充電寶')">充電寶</button>
+          <button class="kbd-btn" onclick="selectProduct('商城')">商城</button>
+        </div>
+        <div class="kbd-nav">
+          <button class="kbd-btn" onclick="goBack()">← 上一步</button>
+          <button class="kbd-btn" onclick="goHome()">⌂ 主選單</button>
+        </div>
+        <button class="kbd-cancel" onclick="cancel()">✕ 取消</button>
+      </div>`;
+  } else if(state.step==='station'){
+    inner = `
+      <div class="quote"><div class="qname">已選擇</div><div class="qtext">${chosenLine()}</div></div>
+      <span class="i-icon">i</span>請選擇站台
+      <div class="kbd">
+        <div class="kbd-row">
+          <button class="kbd-btn" onclick="selectStation('站台 A')">站台 A</button>
+          <button class="kbd-btn" onclick="selectStation('站台 B')">站台 B</button>
+        </div>
+        <div class="kbd-nav">
+          <button class="kbd-btn" onclick="goBack()">← 上一步</button>
+          <button class="kbd-btn" onclick="goHome()">⌂ 主選單</button>
+        </div>
+        <button class="kbd-cancel" onclick="cancel()">✕ 取消</button>
+      </div>`;
+  } else if(state.step==='input'){
+    inner = `
+      <div class="quote"><div class="qname">已選擇</div><div class="qtext">${chosenLine()}</div></div>
+      <span class="i-icon">i</span>請輸入查詢資訊<span class="i-icon">i</span><br>
+      帳號，金額，備注（例：123@gmail.com，100，獎金）
+      <div class="kbd">
+        <div class="kbd-nav">
+          <button class="kbd-btn" onclick="goBack()">← 上一步</button>
+          <button class="kbd-btn" onclick="goHome()">⌂ 主選單</button>
+        </div>
+        <button class="kbd-cancel" onclick="cancel()">✕ 取消</button>
+      </div>`;
+    inputEnabled = true;
+    inputPlaceholder = '帳號，金額，備注';
+  } else if(state.step==='result_ok'){
+    inner = `
+      <div class="quote"><div class="qname">操作員A</div><div class="qtext">${escapeHtml(lastUserInput)}</div></div>
+      <span class="tag-ok">申請完成</span>
+      <div class="mono-block">--- ${escapeHtml(lastUserInput.split('，')[0]||'')} ---</div>
+      產品：${chosenLine()}`;
+  } else if(state.step==='result_fail'){
+    inner = `
+      <div class="quote"><div class="qname">操作員A</div><div class="qtext">${escapeHtml(lastUserInput)}</div></div>
+      <span class="tag-no">申請失敗</span>
+      <div class="mono-block">--- ${escapeHtml(lastUserInput.split('，')[0]||'')} ---</div>
+      <div class="warn-row">⚠️ 錯誤：伺服器異常，請稍後再試</div>
+      <div class="kbd">
+        <button class="kbd-btn" onclick="retry()">↻ 重試</button>
+      </div>`;
+  } else if(state.step==='cancelled'){
+    inner = `操作已取消。
+      <div class="kbd">
+        <button class="kbd-cancel" style="background:#1B212C;color:#6E7A8C" onclick="goHome()">⌂ 回主選單</button>
+      </div>`;
+  }
+
+  const feed = document.getElementById('feed');
+  let card = document.getElementById('botCard');
+  const shouldAppend = !card || state.freshCard;
+
+  if(shouldAppend){
+    if(card){
+      // freeze the previous message: it's now history, not editable
+      card.removeAttribute('id');
+      card.classList.add('stale');
+      const oldKbd = card.querySelector('.kbd');
+      if(oldKbd) oldKbd.remove();
+    }
+    cardEditCount = 0;
+    state.freshCard = false;
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <div class="avatar">Bot</div>
+      <div class="card left" id="botCard">
+        <div class="sender violet">CreditBot</div>
+        <div class="cardBody"></div>
+        <div class="meta"></div>
+      </div>`;
+    feed.appendChild(row);
+    card = row.querySelector('#botCard');
+  }
+
+  cardEditCount++;
+  const editedTag = cardEditCount<=1 ? '' : ' <span class="edited">已編輯</span>';
+
+  card.querySelector('.cardBody').innerHTML = inner;
+  card.querySelector('.meta').innerHTML = `${time()}${editedTag}`;
+  feed.scrollTop = feed.scrollHeight;
+
+  const input = document.getElementById('txtInput');
+  const send = document.getElementById('sendBtn');
+  input.disabled = !inputEnabled;
+  input.placeholder = inputPlaceholder;
+  send.disabled = !inputEnabled;
+  if(inputEnabled) setTimeout(()=>input.focus(),50);
+}
+
+document.getElementById('txtInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter') submitInput();
+});
+
+function restart(){
+  state.step='menu'; state.type=null; state.product=null; state.station=null;
+  state.minute=2; state.history=[]; state.freshCard=false; lastUserInput='';
+  cardEditCount = 0;
+  document.getElementById('feed').innerHTML='';
+  render();
+}
+
+restart();
+</script>
+</body>
+</html>
