@@ -164,6 +164,33 @@
 
   .topbar-setting { display: flex; align-items: center; gap: 3px; font-size: 12px; color: var(--text-muted); cursor: pointer; }
 
+  .bot-switch-wrap {
+    display: flex; align-items: center; gap: 7px;
+    padding: 4px 10px 4px 8px; border-radius: 20px;
+    border: 1px solid #e0e0e0; background: #fafafa;
+    cursor: pointer; transition: all 0.2s; user-select: none;
+  }
+  .bot-switch-wrap:hover { border-color: #c0c0c0; background: #f3f3f3; }
+  .bot-switch-wrap.bot-on  { border-color: #b7e4b0; background: #f0fff0; }
+  .bot-switch-wrap.bot-off { border-color: #f5c6c6; background: #fff5f5; }
+
+  .bot-switch-dot {
+    width: 30px; height: 16px; border-radius: 8px;
+    background: #ccc; position: relative; transition: background 0.2s; flex-shrink: 0;
+  }
+  .bot-switch-dot::after {
+    content:''; position:absolute; top:2px; left:2px;
+    width:12px; height:12px; border-radius:50%;
+    background:#fff; transition: left 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.2);
+  }
+  .bot-on  .bot-switch-dot { background: #67C23A; }
+  .bot-on  .bot-switch-dot::after { left: 16px; }
+  .bot-off .bot-switch-dot { background: #F56C6C; }
+
+  .bot-switch-label { font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .bot-on  .bot-switch-label { color: #4cae42; }
+  .bot-off .bot-switch-label { color: #e05555; }
+
   .topbar-server { font-size: 12px; color: #1E90FF; font-weight: 500; }
 
   .topbar-icon-btn {
@@ -654,7 +681,7 @@
       <div class="logo-icon"><i class="ti ti-robot"></i></div>
       <div>
         <div class="logo-name">TG 机器人</div>
-        <div class="logo-handle">@mybot_official</div>
+        <div class="logo-handle">@my*****ial</div>
       </div>
     </div>
   </div>
@@ -725,6 +752,10 @@
       <span class="breadcrumb-item">用户列表</span>
     </div>
     <div class="topbar-right">
+      <div class="bot-switch-wrap bot-on" id="bot-switch" onclick="toggleBotSwitch()">
+        <div class="bot-switch-dot"></div>
+        <span class="bot-switch-label" id="bot-switch-label">机器人运行中</span>
+      </div>
       <div class="topbar-setting"><i class="ti ti-settings" style="font-size:12px"></i>&nbsp;提示设置</div>
       <div class="topbar-server" id="topbar-clock">服务器：2026-06-18 09:19:23 (Z)</div>
       <div class="topbar-icon-btn"><i class="ti ti-search" style="font-size:13px"></i></div>
@@ -932,7 +963,7 @@
               <th>产品</th>
               <th>站点</th>
               <th>订单号</th>
-              <th>申请人（TG账号）</th>
+              <th>申请人</th>
               <th>用户ID</th>
               <th>金额</th>
               <th>申请时间</th>
@@ -942,6 +973,30 @@
             </tr>
           </thead>
           <tbody>
+            <tr data-site="EX01" data-date="2026-06-18">
+              <td><span class="site-tag">交易所</span></td>
+              <td style="color:#666;font-size:12px">01</td>
+              <td style="font-family:monospace;font-size:12px;color:#333">0RD20260618001B</td>
+              <td style="color:#666;font-size:12px">@admin_zhang</td>
+              <td><span class="badge" style="background:#EBF5FF;color:#409EFF;font-weight:500">批量</span></td>
+              <td style="color:#55C92A;font-weight:500">—</td>
+              <td style="color:#666;font-size:12px">2026-06-18 14:10</td>
+              <td style="color:#666;font-size:12px">2026-06-18 14:13</td>
+              <td><span class="badge badge-active">成功</span></td>
+              <td style="color:#ccc;font-size:12px">—</td>
+            </tr>
+            <tr data-site="ST01" data-date="2026-06-18">
+              <td><span class="site-tag">股票</span></td>
+              <td style="color:#666;font-size:12px">01</td>
+              <td style="font-family:monospace;font-size:12px;color:#333">0RD20260618002B</td>
+              <td style="color:#666;font-size:12px">@admin_zhang</td>
+              <td><span class="badge" style="background:#EBF5FF;color:#409EFF;font-weight:500">批量</span></td>
+              <td style="color:#55C92A;font-weight:500">—</td>
+              <td style="color:#666;font-size:12px">2026-06-18 13:00</td>
+              <td style="color:#666;font-size:12px">2026-06-18 13:04</td>
+              <td><span class="badge badge-block">失败</span></td>
+              <td style="color:#F56C6C;font-size:12px">部分用户账号异常</td>
+            </tr>
             <tr data-site="EX01" data-date="2026-06-18">
               <td><span class="site-tag">交易所</span></td>
               <td style="color:#666;font-size:12px">01</td>
@@ -963,7 +1018,7 @@
               <td style="color:#55C92A;font-weight:500">1000</td>
               <td style="color:#666;font-size:12px">2026-06-18 13:45</td>
               <td style="color:#ccc;font-size:12px">—</td>
-              <td><span class="badge" style="background:#FFF3E0;color:#E6A23C">处理中</span></td>
+              <td><span class="badge" style="background:#FFF3E0;color:#E6A23C">申请中</span></td>
               <td style="color:#ccc;font-size:12px">—</td>
             </tr>
             <tr data-site="PB01" data-date="2026-06-18">
@@ -993,7 +1048,7 @@
           </tbody>
         </table>
         <div class="pagination">
-          <span class="page-info">共 4 条记录</span>
+          <span class="page-info">共 6 条记录</span>
           <div class="page-controls">
             <div class="page-btns">
               <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
@@ -1041,7 +1096,7 @@
               <th>产品</th>
               <th>站点</th>
               <th>订单号</th>
-              <th>申请人（TG账号）</th>
+              <th>申请人</th>
               <th>用户ID</th>
               <th>金额</th>
               <th>申请时间</th>
@@ -1051,6 +1106,30 @@
             </tr>
           </thead>
           <tbody>
+            <tr data-site="PB05" data-date="2026-06-18">
+              <td><span class="site-tag">充电宝</span></td>
+              <td style="color:#666;font-size:12px">05</td>
+              <td style="font-family:monospace;font-size:12px;color:#333">0WTH20260618001B</td>
+              <td style="color:#666;font-size:12px">@admin_li</td>
+              <td><span class="badge" style="background:#EBF5FF;color:#409EFF;font-weight:500">批量</span></td>
+              <td style="color:#F56C6C;font-weight:500">—</td>
+              <td style="color:#666;font-size:12px">2026-06-18 15:30</td>
+              <td style="color:#666;font-size:12px">2026-06-18 15:33</td>
+              <td><span class="badge badge-active">成功</span></td>
+              <td style="color:#ccc;font-size:12px">—</td>
+            </tr>
+            <tr data-site="EX02" data-date="2026-06-18">
+              <td><span class="site-tag">交易所</span></td>
+              <td style="color:#666;font-size:12px">02</td>
+              <td style="font-family:monospace;font-size:12px;color:#333">0WTH20260618002B</td>
+              <td style="color:#666;font-size:12px">@admin_li</td>
+              <td><span class="badge" style="background:#EBF5FF;color:#409EFF;font-weight:500">批量</span></td>
+              <td style="color:#F56C6C;font-weight:500">—</td>
+              <td style="color:#666;font-size:12px">2026-06-18 11:20</td>
+              <td style="color:#666;font-size:12px">2026-06-18 11:22</td>
+              <td><span class="badge badge-block">失败</span></td>
+              <td style="color:#F56C6C;font-size:12px">站点余额不足</td>
+            </tr>
             <tr data-site="EX01" data-date="2026-06-18">
               <td><span class="site-tag">交易所</span></td>
               <td style="color:#666;font-size:12px">01</td>
@@ -1521,7 +1600,7 @@
     <div class="page" id="page-admin">
       <div class="filter-panel">
         <div class="filter-row">
-          <input class="fi" style="width:200px" id="admin-search-account" placeholder="请输入账号或名称...">
+          <input class="fi" style="width:200px" id="admin-search-account" placeholder="请输入账号...">
           <button class="btn btn-green" onclick="searchAdmins()"><i class="ti ti-search"></i> 搜索</button>
           <button class="btn btn-teal" onclick="resetAdminSearch()"><i class="ti ti-rotate-clockwise"></i> 重置</button>
         </div>
@@ -1754,6 +1833,39 @@ function pagerNav(btn, target) {
   if (jumpInput) jumpInput.value = '';
 }
 
+/* ── 机器人开关 ── */
+let _botRunning = true;
+
+function toggleBotSwitch() {
+  const next = !_botRunning;
+  const title = next ? '启动机器人' : '关闭机器人';
+  const msg   = next
+    ? '确定要<b>启动</b>机器人吗？启动后前台将恢复正常响应。'
+    : '确定要<b>关闭</b>机器人吗？关闭后前台机器人将<b>无回应</b>，所有用户均受影响。';
+  showBotConfirm(title, msg, function() {
+    _botRunning = next;
+    const wrap  = document.getElementById('bot-switch');
+    const label = document.getElementById('bot-switch-label');
+    wrap.classList.toggle('bot-on',  _botRunning);
+    wrap.classList.toggle('bot-off', !_botRunning);
+    label.textContent = _botRunning ? '机器人运行中' : '机器人已停止';
+  });
+}
+
+function showBotConfirm(title, msg, onConfirm) {
+  const mask = document.getElementById('bot-confirm-mask');
+  document.getElementById('bot-confirm-title').textContent = title;
+  document.getElementById('bot-confirm-msg').innerHTML = msg;
+  mask.style.display = 'block';
+  document.getElementById('bot-confirm-ok').onclick = function() {
+    mask.style.display = 'none';
+    onConfirm();
+  };
+  document.getElementById('bot-confirm-cancel').onclick = function() {
+    mask.style.display = 'none';
+  };
+}
+
 const ICONS = {
   'layout-dashboard':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>',
   'users':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>',
@@ -1935,10 +2047,16 @@ function renderSitePermBatchBar() {
   const bar = document.getElementById('site-perm-batch-bar');
   if (!bar) return;
   let html = '<span style="font-size:12px;color:#909399;display:flex;align-items:center;margin-right:4px">勾选站点后批量设置：</span>';
+  // 单项按钮
   SITE_FEATURES.forEach(function(f) {
     html += '<button class="btn" onclick="batchSetFeature(\'' + f.key + '\', true)">开启 ' + f.label + '</button>';
     html += '<button class="btn" onclick="batchSetFeature(\'' + f.key + '\', false)">关闭 ' + f.label + '</button>';
   });
+  // 分隔线
+  html += '<span style="width:1px;height:16px;background:#e0e0e0;margin:0 4px;flex-shrink:0"></span>';
+  // 组合按钮
+  html += '<button class="btn btn-green" style="font-weight:500" onclick="batchSetAllFeatures(true)"><i class="ti ti-toggle-right" style="margin-right:3px"></i>开启上下分</button>';
+  html += '<button class="btn" style="background:#FFF0F0;color:#F56C6C;border:1px solid #f5c6c6;font-weight:500" onclick="batchSetAllFeatures(false)"><i class="ti ti-toggle-left" style="margin-right:3px"></i>关闭上下分</button>';
   bar.innerHTML = html;
 }
 
@@ -1966,6 +2084,55 @@ function batchSetFeature(featureKey, value) {
     sitePermData[siteId][featureKey] = value;
   });
   renderSitePermTable();
+}
+
+// 同时对所有功能（上分+下分）批量开启或关闭
+function batchSetAllFeatures(value) {
+  const selected = Array.from(document.querySelectorAll('.site-perm-checkbox:checked')).map(function(c) { return c.value; });
+  if (!selected.length) { alert('请先勾选站点'); return; }
+  const action = value ? '开启' : '关闭';
+  const count = selected.length;
+  if (!confirm('确定要' + action + '已勾选的 ' + count + ' 个站点的上分和下分吗？')) return;
+  selected.forEach(function(siteId) {
+    if (!sitePermData[siteId]) sitePermData[siteId] = {};
+    SITE_FEATURES.forEach(function(f) { sitePermData[siteId][f.key] = value; });
+  });
+  renderSitePermTable();
+}
+
+// ── 站点功能设置表格：勾选 & 批量操作 ──
+function siteSettingToggleAll(cb) {
+  document.querySelectorAll('.site-setting-cb').forEach(function(c) { c.checked = cb.checked; });
+}
+
+function siteSettingGetCheckedRows() {
+  return Array.from(document.querySelectorAll('.site-setting-cb:checked')).map(function(cb) {
+    return cb.closest('tr');
+  });
+}
+
+function siteSettingBatchSet(feature, value) {
+  const rows = siteSettingGetCheckedRows();
+  if (!rows.length) { alert('请先勾选站点'); return; }
+  // feature: 'deposit'=上分(第4列 index4), 'withdraw'=下分(第5列 index5)
+  const colIdx = feature === 'deposit' ? 4 : 5;
+  rows.forEach(function(row) {
+    const toggle = row.cells[colIdx].querySelector('.toggle-switch');
+    if (toggle) { toggle.classList.toggle('on', value); }
+  });
+}
+
+function siteSettingBatchSetAll(value) {
+  const rows = siteSettingGetCheckedRows();
+  if (!rows.length) { alert('请先勾选站点'); return; }
+  const action = value ? '开启' : '关闭';
+  if (!confirm('确定要' + action + '已勾选的 ' + rows.length + ' 个站点的上分和下分吗？')) return;
+  rows.forEach(function(row) {
+    [4, 5].forEach(function(idx) {
+      const toggle = row.cells[idx] && row.cells[idx].querySelector('.toggle-switch');
+      if (toggle) toggle.classList.toggle('on', value);
+    });
+  });
 }
 
 function toggleSitePerm(el) {
@@ -2590,6 +2757,9 @@ function openUserEditModal(btn) {
   var statusBadge = cells[8].querySelector('[data-status]');
   var statusVal = statusBadge ? statusBadge.getAttribute('data-status') : 'blocked';
   document.getElementById('ue-status').value = statusVal;
+  // 回填权限（从行的 data 属性读取，默认未勾选）
+  document.getElementById('ue-perm-cancel-op').checked = _editingUserRow.dataset.permCancelOp === '1';
+  document.getElementById('ue-perm-sensitive-notify').checked = _editingUserRow.dataset.permSensitiveNotify === '1';
   document.getElementById('user-edit-modal').style.display = 'block';
 }
 
@@ -2618,6 +2788,9 @@ function confirmUserEditModal() {
     var statusLabel = statusVal === 'normal' ? '启用' : '禁用';
     var statusCls = statusVal === 'normal' ? 'badge-active' : 'badge-block';
     cells[8].innerHTML = '<span class="badge ' + statusCls + '" data-status="' + statusVal + '">' + statusLabel + '</span>';
+    // 保存权限到行的 data 属性
+    _editingUserRow.dataset.permCancelOp = document.getElementById('ue-perm-cancel-op').checked ? '1' : '0';
+    _editingUserRow.dataset.permSensitiveNotify = document.getElementById('ue-perm-sensitive-notify').checked ? '1' : '0';
   }
   closeUserEditModal();
 }
@@ -2646,7 +2819,7 @@ function openOrderDetail(d) {
     row('订单号', d.no, '#1C2333') +
     row('类型', typeLabel) +
     row('产品 / 站点', d.product + ' / ' + d.site) +
-    row('申请人（TG账号）', d.applicant) +
+    row('申请人', d.applicant) +
     row('用户ID', d.uid) +
     row('交易币种', d.currency) +
     row('交易类型', d.tradeType) +
@@ -3769,6 +3942,19 @@ document.addEventListener('DOMContentLoaded', () => {
           <option value="normal">启用</option>
         </select>
       </div>
+      <div>
+        <label style="font-size:13px;color:#606266;display:block;margin-bottom:8px">权限</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 0">
+          <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;color:#333">
+            <input type="checkbox" id="ue-perm-cancel-op" style="width:15px;height:15px;accent-color:#409EFF;cursor:pointer">
+            取消他人操作
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;color:#333">
+            <input type="checkbox" id="ue-perm-sensitive-notify" style="width:15px;height:15px;accent-color:#409EFF;cursor:pointer">
+            高敏通知
+          </label>
+        </div>
+      </div>
     </div>
     <div style="padding:8px 18px 16px;display:flex;justify-content:flex-end;gap:8px">
       <button class="btn" onclick="closeUserEditModal()">取消</button>
@@ -3932,6 +4118,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="btn" onclick="closeBatchSiteModal()">取消</button>
         <button class="btn btn-green" onclick="confirmBatchSite()">保存</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 机器人开关确认弹窗 ── -->
+<div id="bot-confirm-mask" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:10000;">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:8px;width:360px;box-shadow:0 6px 30px rgba(0,0,0,0.2);overflow:hidden">
+    <div style="padding:18px 20px 12px;display:flex;align-items:center;gap:10px">
+      <i class="ti ti-alert-triangle" style="font-size:22px;color:#E6A23C;flex-shrink:0"></i>
+      <span id="bot-confirm-title" style="font-size:15px;font-weight:600;color:#333"></span>
+    </div>
+    <div style="padding:0 20px 18px;font-size:13px;color:#606266;line-height:1.7" id="bot-confirm-msg"></div>
+    <div style="padding:10px 20px 16px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #f0f0f0">
+      <button class="btn" id="bot-confirm-cancel">取消</button>
+      <button class="btn btn-green" id="bot-confirm-ok">确定</button>
     </div>
   </div>
 </div>
