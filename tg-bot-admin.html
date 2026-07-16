@@ -2760,6 +2760,7 @@ function openUserEditModal(btn) {
   // 回填权限（从行的 data 属性读取，默认未勾选）
   document.getElementById('ue-perm-cancel-op').checked = _editingUserRow.dataset.permCancelOp === '1';
   document.getElementById('ue-perm-sensitive-notify').checked = _editingUserRow.dataset.permSensitiveNotify === '1';
+  document.getElementById('ue-perm-sensitive-amount').value = _editingUserRow.dataset.permSensitiveAmount || '';
   document.getElementById('user-edit-modal').style.display = 'block';
 }
 
@@ -2791,6 +2792,7 @@ function confirmUserEditModal() {
     // 保存权限到行的 data 属性
     _editingUserRow.dataset.permCancelOp = document.getElementById('ue-perm-cancel-op').checked ? '1' : '0';
     _editingUserRow.dataset.permSensitiveNotify = document.getElementById('ue-perm-sensitive-notify').checked ? '1' : '0';
+    _editingUserRow.dataset.permSensitiveAmount = document.getElementById('ue-perm-sensitive-amount').value || '';
   }
   closeUserEditModal();
 }
@@ -3952,6 +3954,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;color:#333">
             <input type="checkbox" id="ue-perm-sensitive-notify" style="width:15px;height:15px;accent-color:#409EFF;cursor:pointer">
             高敏通知
+            <input type="number" id="ue-perm-sensitive-amount" min="0" placeholder="金额" class="fi" style="width:90px;margin-left:6px;padding:3px 8px;height:26px">
           </label>
         </div>
       </div>
