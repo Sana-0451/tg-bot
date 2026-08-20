@@ -78,8 +78,29 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
 <div class="phone">
   <div class="feed">
 
-    <!-- 情境 X：無權限 -->
-    <div class="step-lbl">情境 X — 首次呼叫，權限尚未開通</div>
+    <!-- 情境 0：群組未綁定 -->
+    <div class="step-lbl">情境 0 — 群組尚未綁定，首次呼叫機器人</div>
+    <div class="row right">
+      <div class="card right">
+        <div class="sender blue">操作員A</div>
+        <div>@CreditBot</div>
+        <div class="meta">13:58 <span class="tick">✓✓</span></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="avatar">Bot</div>
+      <div class="card left">
+        <div class="sender violet">CreditBot</div>
+        <span class="tag-no">未授權</span>
+        <span class="tg-link">@操作員A</span> 本群未授權，請聯繫管理員
+        <div class="meta">13:58</div>
+      </div>
+    </div>
+
+    <hr class="divd">
+
+    <!-- 情境 X：已綁定但帳號審核中 -->
+    <div class="step-lbl">情境 X — 群組已綁定，操作員帳號尚未開通</div>
     <div class="row right">
       <div class="card right">
         <div class="sender blue">操作員A</div>
@@ -91,7 +112,7 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
       <div class="avatar">Bot</div>
       <div class="card left">
         <div class="sender violet">CreditBot</div>
-        账号申请完成，请等候审核。
+        <span class="tg-link">@操作員A</span> 账号申请完成，请等候审核
         <div class="meta">14:00</div>
       </div>
     </div>
@@ -99,12 +120,19 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
     <hr class="divd">
 
     <!-- 唯一一則會被反覆編輯的 Bot 訊息 -->
-    <div class="step-lbl">步驟 1 — Bot 發出唯一一則訊息（之後只編輯這一則）</div>
+    <div class="step-lbl">步驟 1 — 操作員呼叫機器人，Bot 發出唯一一則訊息（之後只編輯這一則）</div>
+    <div class="row right">
+      <div class="card right">
+        <div class="sender blue">操作員A</div>
+        <div>@CreditBot</div>
+        <div class="meta">14:02 <span class="tick">✓✓</span></div>
+      </div>
+    </div>
     <div class="row">
       <div class="avatar">Bot</div>
       <div class="card left">
         <div class="sender violet">CreditBot</div>
-        <span class="i-icon">i</span>請選擇操作類型
+        <span class="i-icon">i</span><span class="tg-link">@操作員A</span> 請選擇操作類型
         <div class="kbd">
           <div class="kbd-row">
             <div class="kbd-btn">＋ 上分</div>
@@ -125,19 +153,14 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
       <div class="avatar">Bot</div>
       <div class="card left">
         <div class="sender violet">CreditBot</div>
-        <div class="quote">
-          <div class="qname">已選擇</div>
-          <div class="qtext">上分</div>
-        </div>
-        <span class="i-icon">i</span>請選擇產品別
+        <span class="i-icon">i</span><span class="tg-link">@操作員A</span> 請選擇站點
         <div class="kbd">
           <div class="kbd-row">
-            <div class="kbd-btn">交易所</div>
-            <div class="kbd-btn">股票</div>
+            <div class="kbd-btn">充電寶-賽亞人</div>
+            <div class="kbd-btn">充電寶-海綿寶寶</div>
           </div>
           <div class="kbd-row">
-            <div class="kbd-btn">充電寶</div>
-            <div class="kbd-btn">商城</div>
+            <div class="kbd-btn">充電寶-章魚哥</div>
           </div>
           <div class="kbd-nav">
             <div class="kbd-btn">← 上一步</div>
@@ -148,51 +171,21 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
         <div class="meta">14:02 <span class="edited">已編輯</span></div>
       </div>
     </div>
-    <div class="step-lbl">操作員點按鈕「充電寶」</div>
+    <div class="step-lbl">操作員點按鈕「充電寶-賽亞人」</div>
 
     <hr class="divd">
 
     <!-- Step 3 -->
-    <div class="step-lbl">步驟 3 — 再次編輯同一則訊息</div>
+    <div class="step-lbl">步驟 3 — 編輯為輸入指令的提示</div>
     <div class="row">
       <div class="avatar">Bot</div>
       <div class="card left">
         <div class="sender violet">CreditBot</div>
-        <div class="quote">
-          <div class="qname">已選擇</div>
-          <div class="qtext">上分 · 充電寶</div>
-        </div>
-        <span class="i-icon">i</span>請選擇站台
-        <div class="kbd">
-          <div class="kbd-row">
-            <div class="kbd-btn">站台 A</div>
-            <div class="kbd-btn">站台 B</div>
-          </div>
-          <div class="kbd-nav">
-            <div class="kbd-btn">← 上一步</div>
-            <div class="kbd-btn">⌂ 主選單</div>
-          </div>
-          <div class="kbd-cancel">✕ 取消</div>
-        </div>
-        <div class="meta">14:02 <span class="edited">已編輯</span></div>
-      </div>
-    </div>
-    <div class="step-lbl">操作員點按鈕「站台 A」</div>
-
-    <hr class="divd">
-
-    <!-- Step 4 -->
-    <div class="step-lbl">步驟 4 — 編輯為輸入指令的提示</div>
-    <div class="row">
-      <div class="avatar">Bot</div>
-      <div class="card left">
-        <div class="sender violet">CreditBot</div>
-        <div class="quote">
-          <div class="qname">已選擇</div>
-          <div class="qtext">上分 · 充電寶 · 站台 A</div>
-        </div>
-        <span class="i-icon">i</span>請輸入查詢資訊<span class="i-icon">i</span><br>
-        帳號，金額，備注（例：123@gmail.com，100，獎金）
+        <span class="tg-link">@操作員A</span><br>
+        已選擇：上分・充電寶・賽亞人<br><br>
+        請輸入：帳號，金額，備注<br>
+        例：123456，100，獎金<br>
+        多筆請換行輸入，每行一筆
         <div class="kbd">
           <div class="kbd-nav">
             <div class="kbd-btn">← 上一步</div>
@@ -207,10 +200,34 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
     <div class="row right">
       <div class="card right">
         <div class="sender blue">操作員A</div>
-        123@gmail.com，100，紅包
+        11122202，20，重複批量
         <div class="meta">14:03 <span class="tick">✓✓</span></div>
       </div>
     </div>
+
+    <hr class="divd">
+
+    <!-- Step 4 -->
+    <div class="step-lbl">步驟 4 — 編輯為確認訂單，等待操作員確認</div>
+    <div class="row">
+      <div class="avatar">Bot</div>
+      <div class="card left">
+        <div class="sender violet">CreditBot</div>
+        <span class="tg-link">@操作員A</span><br>
+        確認訂單：<br><br>
+        類型：上分<br>
+        1. 帳號：11122202　金額：+20　備注：重複批量<br>
+        產品：充電寶・賽亞人
+        <div class="kbd">
+          <div class="kbd-row">
+            <div class="kbd-btn">✓ 確認</div>
+            <div class="kbd-btn">✕ 取消</div>
+          </div>
+        </div>
+        <div class="meta">14:03 <span class="edited">已編輯</span></div>
+      </div>
+    </div>
+    <div class="step-lbl">操作員點按鈕「✓ 確認」</div>
 
     <hr class="divd">
 
@@ -220,14 +237,10 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
       <div class="avatar">Bot</div>
       <div class="card left">
         <div class="sender violet">CreditBot</div>
-        <div class="quote">
-          <div class="qname">操作員A</div>
-          <div class="qtext">123@gmail.com，100，紅包</div>
-        </div>
-        <span class="tag-ok">处理中</span>
-        <div class="mono-block">--- 123@gmail.com ---</div>
-        金額：＋100　備注：紅包<br>
-        產品：充電寶 · 站台 A
+        <span class="tg-link">@操作員A</span><br>
+        處理結果：<br><br>
+        <span class="tag-ok">⏳ 处理中</span>　筆數：1筆<br><br>
+        產品：充電寶・賽亞人
         <div class="meta">14:03 <span class="edited">已編輯</span></div>
       </div>
     </div>
@@ -238,13 +251,10 @@ Bot 全程只送出 <b>1 則訊息</b>，之後用 <span class="tg-link" style="
       <div class="avatar">Bot</div>
       <div class="card left">
         <div class="sender violet">CreditBot</div>
-        <div class="quote">
-          <div class="qname">操作員A</div>
-          <div class="qtext">123@gmail.com，100，紅包</div>
-        </div>
-        <span class="tag-no">失敗</span>
-        <div class="mono-block">--- 123@gmail.com ---</div>
-        <div class="warn-row">失败原因：账号不存在。账号：123456</div>
+        <span class="tg-link">@操作員A</span><br>
+        處理結果：<span class="tag-no">❌ 失敗</span><br><br>
+        失败原因：账号重复。账号：11122202<br><br>
+        產品：充電寶・賽亞人
         <div class="kbd">
           <div class="kbd-row">
             <div class="kbd-btn">↻ 重試</div>
