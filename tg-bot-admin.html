@@ -431,6 +431,8 @@
   /* ── Toggle switch ── */
   /* 无「操作」权限时隐藏页面内的新增/编辑/删除等操作类元素 */
   .page.no-operate .op-action { display: none !important; }
+  /* 无「操作」权限时，状态开关（启用/禁用、上分/下分）保留可见但不可点击，让查看权限的人仍能看到当前状态 */
+  .page.no-operate .op-toggle { pointer-events: none; opacity: 0.5; cursor: not-allowed; }
 
   .toggle-switch {
     display: inline-block;
@@ -1728,7 +1730,7 @@
               <td style="color:#666;font-size:12px">2026-01-01 00:00</td>
               <td style="color:#ccc;font-size:12px">—</td>
               <td>
-                <div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
+                <div class="labeled-toggle op-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
               </td>
               <td>
                 <span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>
@@ -1744,7 +1746,7 @@
               <td style="color:#666;font-size:12px">2026-03-15 10:30</td>
               <td style="color:#666;font-size:12px">admin</td>
               <td>
-                <div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
+                <div class="labeled-toggle op-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
               </td>
               <td>
                 <span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>
@@ -3088,8 +3090,8 @@ function renderSiteSettingTable() {
       '<td style="padding-left:14px"><span class="site-tag">' + s.product + '</span></td>' +
       '<td style="color:#333;font-weight:500">' + s.name + '</td>' +
       '<td style="color:#666;font-size:12px;font-family:monospace">' + s.url + '</td>' +
-      '<td><div class="toggle-switch' + (s.deposit ? ' on' : '') + '" onclick="toggleSiteListField(\'' + s.id + '\',\'deposit\')"></div></td>' +
-      '<td><div class="toggle-switch' + (s.withdraw ? ' on' : '') + '" onclick="toggleSiteListField(\'' + s.id + '\',\'withdraw\')"></div></td>' +
+      '<td><div class="labeled-toggle op-toggle' + (s.deposit ? ' on' : ' off') + '" onclick="toggleSiteListField(this,\'' + s.id + '\',\'deposit\')"><span class="toggle-label">' + (s.deposit ? '启用' : '禁用') + '</span><div class="toggle-knob"></div></div></td>' +
+      '<td><div class="labeled-toggle op-toggle' + (s.withdraw ? ' on' : ' off') + '" onclick="toggleSiteListField(this,\'' + s.id + '\',\'withdraw\')"><span class="toggle-label">' + (s.withdraw ? '启用' : '禁用') + '</span><div class="toggle-knob"></div></div></td>' +
       '<td>' +
         '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openSiteSettingModal(\'' + s.id + '\')">&#9998; 编辑</span>' +
         '<span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteSiteSetting(\'' + s.id + '\')">&#9998; 删除</span>' +
@@ -3098,9 +3100,27 @@ function renderSiteSettingTable() {
   }).join('');
 }
 
-function toggleSiteListField(id, field) {
+// 通用的「蓝底+文字」开关（启用/禁用），供新增/编辑弹窗内的状态开关使用
+function setLabeledToggle(el, on) {
+  if (!el) return;
+  el.classList.toggle('on', on);
+  el.classList.toggle('off', !on);
+  var label = el.querySelector('.toggle-label');
+  if (label) label.textContent = on ? '启用' : '禁用';
+}
+
+function toggleLabeledToggle(el) {
+  setLabeledToggle(el, !el.classList.contains('on'));
+}
+
+function toggleSiteListField(el, id, field) {
   var s = getSiteListById(id);
-  if (s) s[field] = !s[field];
+  if (!s) return;
+  s[field] = !s[field];
+  el.classList.toggle('on', s[field]);
+  el.classList.toggle('off', !s[field]);
+  var label = el.querySelector('.toggle-label');
+  if (label) label.textContent = s[field] ? '启用' : '禁用';
 }
 
 function openSiteSettingModal(id) {
@@ -3120,8 +3140,8 @@ function openSiteSettingModal(id) {
     document.getElementById('ss-site-name-row').style.display = '';
     document.getElementById('ss-site-name-edit').value = s.name;
     document.getElementById('ss-url').value = s.url;
-    document.getElementById('ss-toggle-deposit').classList.toggle('on', !!s.deposit);
-    document.getElementById('ss-toggle-withdraw').classList.toggle('on', !!s.withdraw);
+    setLabeledToggle(document.getElementById('ss-toggle-deposit'), !!s.deposit);
+    setLabeledToggle(document.getElementById('ss-toggle-withdraw'), !!s.withdraw);
   } else {
     productSel.style.display = '';
     productText.style.display = 'none';
@@ -3131,8 +3151,8 @@ function openSiteSettingModal(id) {
     document.getElementById('ss-site-num').innerHTML = '<option value="">请先选择产品</option>';
     document.getElementById('ss-site-name').value = '';
     document.getElementById('ss-url').value = '';
-    document.getElementById('ss-toggle-deposit').classList.add('on');
-    document.getElementById('ss-toggle-withdraw').classList.add('on');
+    setLabeledToggle(document.getElementById('ss-toggle-deposit'), true);
+    setLabeledToggle(document.getElementById('ss-toggle-withdraw'), true);
   }
   document.getElementById('ss-url-result').style.display = 'none';
   document.getElementById('site-setting-modal').style.display = 'block';
@@ -3257,10 +3277,10 @@ function addBsRow() {
       '<div class="bs-url-result" style="display:none;font-size:11px;padding:2px 4px;margin-top:3px;border-radius:3px"></div>' +
     '</td>' +
     '<td style="padding:4px 8px;text-align:center;border:1px solid #EBEEF5">' +
-      '<div class="toggle-switch on bs-dep" onclick="this.classList.toggle(\'on\')"></div>' +
+      '<div class="labeled-toggle on bs-dep" onclick="toggleLabeledToggle(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>' +
     '</td>' +
     '<td style="padding:4px 8px;text-align:center;border:1px solid #EBEEF5">' +
-      '<div class="toggle-switch on bs-wit" onclick="this.classList.toggle(\'on\')"></div>' +
+      '<div class="labeled-toggle on bs-wit" onclick="toggleLabeledToggle(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>' +
     '</td>' +
     '<td style="padding:4px 8px;text-align:center;border:1px solid #EBEEF5">' +
       '<span style="color:#F56C6C;font-size:16px;cursor:pointer;line-height:1" onclick="this.closest(\'tr\').remove()" title="删除此行">&times;</span>' +
@@ -3401,7 +3421,7 @@ function renderGroupTable() {
       '<td style="padding-left:14px;font-family:monospace;color:#333">' + g.chatId + '</td>' +
       '<td style="color:#333;font-weight:500">' + g.name + '</td>' +
       '<td style="max-width:320px">' + siteTags + '</td>' +
-      '<td><div class="toggle-switch' + (g.enabled ? ' on' : '') + '" onclick="toggleGroupEnabled(\'' + g.id + '\')"></div></td>' +
+      '<td><div class="labeled-toggle op-toggle' + (g.enabled ? ' on' : ' off') + '" onclick="toggleGroupEnabled(\'' + g.id + '\')"><span class="toggle-label">' + (g.enabled ? '启用' : '禁用') + '</span><div class="toggle-knob"></div></div></td>' +
       '<td style="color:#666;font-size:12px">' + g.boundAt + '</td>' +
       '<td>' +
         '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openGroupModal(\'' + g.id + '\')">&#9998; 编辑</span>' +
@@ -3442,7 +3462,7 @@ function openGroupModal(id) {
   document.getElementById('gm-chatid').value = g ? g.chatId : '';
   document.getElementById('gm-chatid').disabled = isEdit;
   document.getElementById('gm-name').value = g ? g.name : '';
-  document.getElementById('gm-enabled').classList.toggle('on', g ? g.enabled : true);
+  setLabeledToggle(document.getElementById('gm-enabled'), g ? g.enabled : true);
   _groupModalSiteIds = g ? g.siteIds.slice() : [];
 
   renderGroupSitePicker();
@@ -3664,7 +3684,7 @@ function confirmAccountModal() {
       '<td style="color:#666;font-size:12px">—</td>' +
       '<td style="color:#666;font-size:12px">' + nowStr + '</td>' +
       '<td style="color:#666;font-size:12px">admin</td>' +
-      '<td><div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div></td>' +
+      '<td><div class="labeled-toggle op-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div></td>' +
       '<td>' +
         '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>' +
         '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + account + '\')">&#9998; 密码重制</span>' +
@@ -4431,11 +4451,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="display:flex;flex-direction:column;gap:8px">
           <label style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#333">
             <span>上分</span>
-            <div id="ss-toggle-deposit" class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+            <div id="ss-toggle-deposit" class="labeled-toggle on" onclick="toggleLabeledToggle(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
           </label>
           <label style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#333">
             <span>下分</span>
-            <div id="ss-toggle-withdraw" class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+            <div id="ss-toggle-withdraw" class="labeled-toggle on" onclick="toggleLabeledToggle(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
           </label>
         </div>
       </div>
@@ -4484,7 +4504,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div>
         <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>群组ID（chat_id）</label>
         <input id="gm-chatid" class="fi" style="width:100%;font-family:monospace" placeholder="如：-1001234567890">
-        <div style="font-size:11px;color:#999;margin-top:4px">将机器人拉入群组后，可通过 /id 指令在群内获取该群组的 chat_id。</div>
+        <div style="font-size:11px;color:#999;margin-top:4px">请填写真实的群组 chat_id，若填写错误或与实际群组不符，机器人将不会在该群响应任何指令。</div>
       </div>
       <div>
         <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>群组名称</label>
@@ -4504,7 +4524,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div>
         <label style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#333">
           <span>启用（关闭后该群组暂停使用机器人，但保留绑定关系）</span>
-          <div id="gm-enabled" class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+          <div id="gm-enabled" class="labeled-toggle on" onclick="toggleLabeledToggle(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
         </label>
       </div>
     </div>
@@ -4528,8 +4548,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:left;border:1px solid #EBEEF5;width:110px">产品别</th>
             <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:left;border:1px solid #EBEEF5;width:130px">站点名称</th>
             <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:left;border:1px solid #EBEEF5">URL</th>
-            <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:center;border:1px solid #EBEEF5;width:46px">上分</th>
-            <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:center;border:1px solid #EBEEF5;width:46px">下分</th>
+            <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:center;border:1px solid #EBEEF5;width:64px">上分</th>
+            <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:center;border:1px solid #EBEEF5;width:64px">下分</th>
             <th style="font-size:12px;font-weight:600;color:#606266;padding:6px 8px;text-align:center;border:1px solid #EBEEF5;width:36px"></th>
           </tr>
         </thead>
