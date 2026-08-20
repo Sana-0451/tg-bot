@@ -429,6 +429,9 @@
   .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 
   /* ── Toggle switch ── */
+  /* 无「操作」权限时隐藏页面内的新增/编辑/删除等操作类元素 */
+  .page.no-operate .op-action { display: none !important; }
+
   .toggle-switch {
     display: inline-block;
     width: 38px; height: 20px;
@@ -728,8 +731,11 @@
       <span>系统设置</span><span class="nav-section-arrow">▼</span>
     </div>
     <div class="nav-section-items" style="max-height:200px">
+      <div class="nav-item" onclick="showPage('groups', this)">
+        <i class="ti ti-users"></i> 群组管理
+      </div>
       <div class="nav-item" onclick="showPage('settings', this)">
-        <i class="ti ti-settings"></i> 站点功能设置
+        <i class="ti ti-settings"></i> 站点管理
       </div>
       <div class="nav-item" onclick="showPage('oplog', this)">
         <i class="ti ti-clipboard-list"></i> 操作日志
@@ -762,8 +768,13 @@
       <div class="avatar-menu" id="avatar-menu">
         <div class="topbar-avatar" onclick="toggleAvatarMenu(event)">A</div>
         <div class="avatar-dropdown" id="avatar-dropdown">
-          <div class="avatar-dropdown-item">
+          <div class="avatar-dropdown-item" style="cursor:default">
             <i class="ti ti-user-circle"></i> 管理员
+          </div>
+          <div class="avatar-dropdown-divider"></div>
+          <div style="padding:6px 14px 3px;font-size:11px;color:#999">预览身份（仅演示，用于查看不同角色权限效果）</div>
+          <div style="padding:0 14px 8px">
+            <select id="role-preview-select" class="fi" style="width:100%;font-size:12px;padding:5px 8px" onchange="switchCurrentRole(this.value)"></select>
           </div>
           <div class="avatar-dropdown-divider"></div>
           <div class="avatar-dropdown-item avatar-dropdown-danger">
@@ -841,8 +852,8 @@
 
       <!-- Action buttons -->
       <div class="action-bar">
-        <button class="btn" onclick="batchToggleStatus()">批量启用/禁用</button>
-        <button class="btn" style="background:#fff;display:none" onclick="openBatchAddModal()"><i class="ti ti-plus"></i> 批量添加</button>
+        <button class="btn op-action" onclick="batchToggleStatus()">批量启用/禁用</button>
+        <button class="btn op-action" style="background:#fff;display:none" onclick="openBatchAddModal()"><i class="ti ti-plus"></i> 批量添加</button>
       </div>
 
       <!-- Table -->
@@ -873,7 +884,7 @@
               <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2026-01-15</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
-              <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
+              <td><span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
             </tr>
             <tr data-date="2026-02-08">
               <td style="padding-left:12px"><input type="checkbox" class="user-checkbox" value="208374"></td>
@@ -885,7 +896,7 @@
               <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2026-02-08</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
-              <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
+              <td><span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
             </tr>
             <tr data-date="2025-12-20">
               <td style="padding-left:12px"><input type="checkbox" class="user-checkbox" value="301928"></td>
@@ -897,7 +908,7 @@
               <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2025-12-20</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
-              <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
+              <td><span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
             </tr>
             <tr data-date="2026-03-11">
               <td style="padding-left:12px"><input type="checkbox" class="user-checkbox" value="418203"></td>
@@ -909,7 +920,7 @@
               <td style="color:#ccc;font-size:12px">—</td>
               <td style="color:#666;font-size:12px">2026-03-11</td>
               <td><span class="badge badge-block" data-status="blocked">禁用</span></td>
-              <td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
+              <td><span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>
             </tr>
           </tbody>
         </table>
@@ -1252,7 +1263,7 @@
       <div class="card">
         <div class="card-header"><span class="card-title">使用说明</span></div>
         <div style="color:#666;font-size:13px;line-height:1.9">
-          <p>1. 所有指令均需以「/」开头，在与机器人的私聊或已授权群组中发送。</p>
+          <p>1. 所有指令均需以「/」开头，在与机器人的私聊或已授权群组中发送。群组需先在「系统设置 → 群组管理」中绑定群组ID并启用，未绑定/已禁用的群组无法使用机器人。</p>
           <p>2. 「仅管理员」权限的指令仅限后台设置的管理员账号使用，其他用户发送将被忽略。</p>
           <p>3. 指令的启用状态由后台统一控制，禁用后用户发送该指令将收到提示消息。</p>
           <p>4. 如需调整指令文案或添加自定义指令，请联系技术人员协助配置。</p>
@@ -1404,7 +1415,60 @@
       </div>
     </div>
 
-    <!-- ══ 站点功能设置 ══ -->
+    <!-- ══ 群组管理 ══ -->
+    <div class="page" id="page-groups">
+      <div class="card" style="margin-bottom:12px;display:flex;align-items:center;gap:10px;padding:12px 16px">
+        <i class="ti ti-shield" style="color:var(--primary);flex-shrink:0"></i>
+        <span style="font-size:13px;color:#606266">未在下方列表中绑定、或状态为「禁用」的群组，机器人将不响应任何指令，并自动提示「本群未授权」。仅已绑定且启用的群组可使用机器人，且只会看到该群组配置的站点列表。</span>
+      </div>
+
+      <div class="filter-panel">
+        <div class="filter-row">
+          <input class="fi" style="width:200px" id="group-search-id" placeholder="搜索群组ID...">
+          <input class="fi" style="width:200px" id="group-search-name" placeholder="搜索群组名称...">
+          <button class="btn btn-green" onclick="searchGroups()"><i class="ti ti-search"></i> 搜索</button>
+          <button class="btn btn-teal" onclick="resetGroups()"><i class="ti ti-rotate-clockwise"></i> 重置</button>
+        </div>
+      </div>
+      <div class="action-bar" style="margin-bottom:12px">
+        <button class="btn op-action" style="background:#fff" onclick="openGroupModal()"><i class="ti ti-plus"></i> 添加群组</button>
+      </div>
+      <div class="table-card">
+        <table class="data-table" id="group-table">
+          <thead>
+            <tr>
+              <th style="padding-left:14px">群组ID</th>
+              <th>群组名称</th>
+              <th>绑定站点</th>
+              <th>状态</th>
+              <th>绑定时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="group-table-body"></tbody>
+        </table>
+        <div class="pagination">
+          <span class="page-info" id="group-page-info">共 0 条记录</span>
+          <div class="page-controls">
+            <div class="page-btns">
+              <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn" onclick="pagerNav(this,1)">›</button>
+            </div>
+            <select class="page-size-select" onchange="onPageSizeChange(this)">
+              <option value="20" selected>20 条/页</option>
+              <option value="50">50 条/页</option>
+              <option value="100">100 条/页</option>
+            </select>
+            <div class="page-jump">
+              跳至<input class="page-jump-input" type="number" min="1" placeholder="" onkeydown="onPageJump(event,this)">页
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 站点管理 ══ -->
     <div class="page" id="page-settings">
       <div class="filter-panel">
         <div class="filter-row">
@@ -1415,58 +1479,24 @@
         </div>
       </div>
       <div class="action-bar" style="margin-bottom:12px">
-        <button class="btn" style="background:#fff" onclick="openBatchSiteModal()"><i class="ti ti-plus"></i> 批量添加</button>
+        <button class="btn op-action" style="background:#fff" onclick="openBatchSiteModal()"><i class="ti ti-plus"></i> 批量添加</button>
       </div>
       <div class="table-card">
         <table class="data-table" id="site-setting-table">
           <thead>
             <tr>
               <th style="padding-left:14px">产品</th>
-              <th>站点</th>
+              <th>站点名称</th>
               <th>URL</th>
               <th>上分</th>
               <th>下分</th>
               <th>操作</th>
             </tr>
           </thead>
-          <tbody id="site-setting-body">
-            <tr>
-              <td style="padding-left:14px"><span class="site-tag">交易所</span></td>
-              <td style="color:#333;font-weight:500">交易所-01</td>
-              <td style="color:#666;font-size:12px;font-family:monospace">https://ex01.example.com/api</td>
-              <td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td>
-              <td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td>
-              <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openSiteSettingModal(this.closest('tr'))">&#9998; 编辑</span>
-                <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteSiteSetting(this)">&#9998; 删除</span>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding-left:14px"><span class="site-tag">股票</span></td>
-              <td style="color:#333;font-weight:500">股票-01</td>
-              <td style="color:#666;font-size:12px;font-family:monospace">https://st01.example.com/api</td>
-              <td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td>
-              <td><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></td>
-              <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openSiteSettingModal(this.closest('tr'))">&#9998; 编辑</span>
-                <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteSiteSetting(this)">&#9998; 删除</span>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding-left:14px"><span class="site-tag">充电宝</span></td>
-              <td style="color:#333;font-weight:500">充电宝-01</td>
-              <td style="color:#666;font-size:12px;font-family:monospace">https://pb01.example.com/api</td>
-              <td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td>
-              <td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td>
-              <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openSiteSettingModal(this.closest('tr'))">&#9998; 编辑</span>
-                <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteSiteSetting(this)">&#9998; 删除</span>
-              </td>
-            </tr>
-          </tbody>
+          <tbody id="site-setting-body"></tbody>
         </table>
         <div class="pagination">
-          <span class="page-info">共 3 条记录</span>
+          <span class="page-info" id="site-setting-page-info">共 0 条记录</span>
           <div class="page-controls">
             <div class="page-btns">
               <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
@@ -1496,7 +1526,8 @@
             <option value="账号管理">账号管理</option>
             <option value="TG用户列表">TG用户列表</option>
             <option value="限制设置">限制设置</option>
-            <option value="站点功能设置">站点功能设置</option>
+            <option value="群组管理">群组管理</option>
+            <option value="站点管理">站点管理</option>
           </select>
           <select class="fi" style="width:120px" id="oplog-filter-action">
             <option value="">全部操作</option>
@@ -1526,6 +1557,48 @@
             </tr>
           </thead>
           <tbody id="oplog-table-body">
+            <tr data-page="群组管理" data-action="添加" data-date="2026-06-23">
+              <td style="padding-left:14px;color:#666;font-size:12px;white-space:nowrap">2026-06-23 10:05</td>
+              <td style="color:#333">admin</td>
+              <td><span class="badge badge-normal">群组管理</span></td>
+              <td><span class="badge badge-active">添加</span></td>
+              <td style="color:#333;font-size:12px">交易所主群（-1001234567890）</td>
+              <td style="color:#666;font-size:12px;line-height:1.8">
+                <div>绑定站点：交易所-赛亚人、交易所-蝙蝠侠</div>
+                <div>启用状态：启用</div>
+              </td>
+            </tr>
+            <tr data-page="群组管理" data-action="编辑" data-date="2026-06-23">
+              <td style="padding-left:14px;color:#666;font-size:12px;white-space:nowrap">2026-06-23 09:40</td>
+              <td style="color:#333">admin</td>
+              <td><span class="badge badge-normal">群组管理</span></td>
+              <td><span class="badge badge-vip">编辑</span></td>
+              <td style="color:#333;font-size:12px">股票VIP群（-1009876543210）</td>
+              <td style="color:#666;font-size:12px;line-height:1.8">
+                <div>绑定站点：股票-派大星 → 股票-派大星、股票-皮卡丘</div>
+              </td>
+            </tr>
+            <tr data-page="站点管理" data-action="添加" data-date="2026-06-22">
+              <td style="padding-left:14px;color:#666;font-size:12px;white-space:nowrap">2026-06-22 15:50</td>
+              <td style="color:#333">admin</td>
+              <td><span class="badge badge-normal">站点管理</span></td>
+              <td><span class="badge badge-active">添加</span></td>
+              <td style="color:#333;font-size:12px">股票-哆啦A梦</td>
+              <td style="color:#666;font-size:12px;line-height:1.8">
+                <div>URL：https://st03.example.com</div>
+                <div>上分：开启　下分：开启</div>
+              </td>
+            </tr>
+            <tr data-page="角色管理" data-action="编辑" data-date="2026-06-22">
+              <td style="padding-left:14px;color:#666;font-size:12px;white-space:nowrap">2026-06-22 11:12</td>
+              <td style="color:#333">admin</td>
+              <td><span class="badge badge-normal">角色管理</span></td>
+              <td><span class="badge badge-vip">编辑</span></td>
+              <td style="color:#333;font-size:12px">一般管理员</td>
+              <td style="color:#666;font-size:12px;line-height:1.8">
+                <div>操作权限：用户列表 新增「操作」</div>
+              </td>
+            </tr>
             <tr data-page="账号管理" data-action="添加" data-date="2026-06-22">
               <td style="padding-left:14px;color:#666;font-size:12px;white-space:nowrap">2026-06-22 09:15</td>
               <td style="color:#333">admin</td>
@@ -1559,10 +1632,10 @@
                 <div>状态：禁用 → 启用</div>
               </td>
             </tr>
-            <tr data-page="站点功能设置" data-action="编辑" data-date="2026-06-21">
+            <tr data-page="站点管理" data-action="编辑" data-date="2026-06-21">
               <td style="padding-left:14px;color:#666;font-size:12px;white-space:nowrap">2026-06-21 14:20</td>
               <td style="color:#333">admin</td>
-              <td><span class="badge badge-normal">站点功能设置</span></td>
+              <td><span class="badge badge-normal">站点管理</span></td>
               <td><span class="badge badge-vip">编辑</span></td>
               <td style="color:#333;font-size:12px;line-height:1.8">
                 <div>充电宝-01</div>
@@ -1600,7 +1673,7 @@
           </tbody>
         </table>
         <div class="pagination">
-          <span class="page-info">共 6 条记录</span>
+          <span class="page-info">共 10 条记录</span>
           <div class="page-controls">
             <div class="page-btns">
               <button class="page-btn" onclick="pagerNav(this,-1)">‹</button>
@@ -1630,7 +1703,7 @@
         </div>
       </div>
       <div class="action-bar">
-        <button class="btn" style="background:#fff" onclick="openAddAccountModal()"><i class="ti ti-plus"></i> 添加账号</button>
+        <button class="btn op-action" style="background:#fff" onclick="openAddAccountModal()"><i class="ti ti-plus"></i> 添加账号</button>
       </div>
       <div class="table-card">
         <table class="data-table">
@@ -1658,9 +1731,9 @@
                 <div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
               </td>
               <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal('admin')">&#9998; 密码重制</span>
-                <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>
+                <span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>
+                <span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal('admin')">&#9998; 密码重制</span>
+                <span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>
               </td>
             </tr>
             <tr>
@@ -1674,9 +1747,9 @@
                 <div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div>
               </td>
               <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal('operator01')">&#9998; 密码重制</span>
-                <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>
+                <span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>
+                <span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal('operator01')">&#9998; 密码重制</span>
+                <span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>
               </td>
             </tr>
           </tbody>
@@ -1712,7 +1785,7 @@
         </div>
       </div>
       <div class="action-bar">
-        <button class="btn" style="background:#fff" onclick="openRoleModal()"><i class="ti ti-plus"></i> 添加角色</button>
+        <button class="btn op-action" style="background:#fff" onclick="openRoleModal()"><i class="ti ti-plus"></i> 添加角色</button>
       </div>
       <div class="table-card">
         <table class="data-table">
@@ -1739,8 +1812,8 @@
               <td style="color:#666;font-size:12px">admin</td>
               <td style="color:#666;font-size:12px">2026-06-22 08:00</td>
               <td>
-                <span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openRoleModal('general')">&#9998; 编辑</span>
-                <span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteRole('general', this)">&#9998; 删除</span>
+                <span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openRoleModal('general')">&#9998; 编辑</span>
+                <span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteRole('general', this)">&#9998; 删除</span>
               </td>
             </tr>
           </tbody>
@@ -1943,7 +2016,8 @@ const pageMeta = {
   'withdraw-order':['首页', '下分订单'],
   commands:        ['首页', '指令说明'],
   limits:          ['首页', '限制设置'],
-  settings:        ['首页', '站点功能设置'],
+  groups:          ['首页', '群组管理'],
+  settings:        ['首页', '站点管理'],
   oplog:           ['首页', '操作日志'],
 };
 
@@ -1984,7 +2058,7 @@ function showPage(id, navEl) {
   ).join('');
 }
 
-// ── 站点功能设置：数据驱动配置 ──
+// ── 站点管理：数据驱动配置 ──
 // 站点数量可能很多（如充电宝类别下有 40 个），所以按类别分页展示，避免表格过长。
 // 以后添加功能，只要在 SITE_FEATURES 数组里加一项即可，每个类别的表格都会自动多一列。
 // 以后添加类别或站点，只要改 SITE_CATEGORIES（定义在下方）即可，这里不用改。
@@ -2124,7 +2198,7 @@ function batchSetAllFeatures(value) {
   renderSitePermTable();
 }
 
-// ── 站点功能设置表格：勾选 & 批量操作 ──
+// ── 站点管理表格：勾选 & 批量操作 ──
 function siteSettingToggleAll(cb) {
   document.querySelectorAll('.site-setting-cb').forEach(function(c) { c.checked = cb.checked; });
 }
@@ -2490,14 +2564,14 @@ const MENU_GROUPS = [
   {
     group: '权限管理',
     menus: [
-      { key: 'roles',  label: '角色管理', actions: [{ key: 'query', label: '查询' }] },
-      { key: 'admin',  label: '账号管理', actions: [{ key: 'query', label: '查询' }] },
+      { key: 'roles',  label: '角色管理', actions: [{ key: 'query', label: '查询' }, { key: 'operate', label: '操作' }] },
+      { key: 'admin',  label: '账号管理', actions: [{ key: 'query', label: '查询' }, { key: 'operate', label: '操作' }] },
     ]
   },
   {
     group: '用户管理',
     menus: [
-      { key: 'users',  label: '用户列表', actions: [{ key: 'query', label: '查询' }] },
+      { key: 'users',  label: '用户列表', actions: [{ key: 'query', label: '查询' }, { key: 'operate', label: '操作' }] },
     ]
   },
   {
@@ -2510,7 +2584,8 @@ const MENU_GROUPS = [
   {
     group: '系统设置',
     menus: [
-      { key: 'settings', label: '站点功能设置', actions: [{ key: 'query', label: '查询' }] },
+      { key: 'groups',   label: '群组管理',     actions: [{ key: 'query', label: '查询' }, { key: 'operate', label: '操作' }] },
+      { key: 'settings', label: '站点管理', actions: [{ key: 'query', label: '查询' }, { key: 'operate', label: '操作' }] },
       { key: 'oplog',    label: '操作日志',     actions: [{ key: 'query', label: '查询' }] },
     ]
   },
@@ -2531,13 +2606,32 @@ const ROLES = {
   general: {
     name: '一般管理员',
     desc: '用户管理、上下分订单',
-    menus: new Set(['users', 'deposit-order', 'withdraw-order']),
+    menus: new Set(['users', 'users:query', 'users:operate', 'deposit-order', 'deposit-order:query', 'withdraw-order', 'withdraw-order:query']),
     builtin: false,
   },
 };
 
 // 当前登录角色（原型演示用，实际由登录系统注入）
 var currentRoleKey = 'super';
+
+// 有操作栏位的页面：menu key 与 page id 一致
+var OPERATE_PAGES = ['roles', 'admin', 'users', 'groups', 'settings'];
+
+function hasOperatePerm(menuKey) {
+  var role = ROLES[currentRoleKey];
+  if (!role) return false;
+  return role.builtin || role.menus.has(menuKey + ':operate');
+}
+
+// 根据当前角色是否有「操作」权限，隐藏对应页面里带 op-action 类的新增/编辑/删除等元素
+// 用 CSS 类而非逐个隐藏 DOM，好处是表格之后重新渲染（搜索、增删）时不用重复调用
+function applyOperatePermissions() {
+  OPERATE_PAGES.forEach(function(pageKey) {
+    var pageEl = document.getElementById('page-' + pageKey);
+    if (!pageEl) return;
+    pageEl.classList.toggle('no-operate', !hasOperatePerm(pageKey));
+  });
+}
 
 // 根据当前角色控制菜单可见性
 function applyRoleToNav() {
@@ -2549,6 +2643,36 @@ function applyRoleToNav() {
     var pageKey = match[1];
     item.style.display = (role.menus.has(pageKey) || role.builtin) ? '' : 'none';
   });
+  applyOperatePermissions();
+}
+
+// ── 身份预览（演示用）：切换当前登录角色，验证权限效果 ──
+function renderRolePreviewSelect() {
+  var sel = document.getElementById('role-preview-select');
+  if (!sel) return;
+  sel.innerHTML = Object.keys(ROLES).map(function(k) {
+    return '<option value="' + k + '"' + (k === currentRoleKey ? ' selected' : '') + '>' + ROLES[k].name + '</option>';
+  }).join('');
+}
+
+function switchCurrentRole(key) {
+  if (!ROLES[key]) return;
+  currentRoleKey = key;
+  applyRoleToNav();
+  // 若当前所在页面对新角色不可见，跳转到该角色第一个可见页面
+  var activePage = document.querySelector('.page.active');
+  var activeId = activePage ? activePage.id.replace('page-', '') : null;
+  var role = ROLES[key];
+  var stillVisible = role.builtin || (activeId && role.menus.has(activeId));
+  if (!stillVisible) {
+    var firstVisible = Array.from(document.querySelectorAll('.nav-item[onclick]')).find(function(el) {
+      return el.style.display !== 'none';
+    });
+    if (firstVisible) {
+      var m = firstVisible.getAttribute('onclick').match(/showPage\('([^']+)'/);
+      if (m) showPage(m[1], firstVisible);
+    }
+  }
 }
 
 var _editingRoleKey = null;
@@ -2586,9 +2710,10 @@ function openRoleModal(roleKey) {
       if (m.actions && m.actions.length) {
         html += '<div style="padding-left:22px;display:flex;flex-wrap:wrap;gap:12px;margin-top:2px">';
         m.actions.forEach(function(a) {
+          var actionChecked = role ? role.menus.has(m.key + ':' + a.key) : false;
           html += '<label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#666;cursor:pointer">';
           html += '<input type="checkbox" class="role-action-cb" data-menu="' + m.key + '" data-action="' + a.key + '"' +
-            (menuChecked ? ' checked' : '') + (menuChecked ? '' : ' disabled') + '>';
+            (actionChecked ? ' checked' : '') + (menuChecked ? '' : ' disabled') + '>';
           html += a.label + '</label>';
         });
         html += '</div>';
@@ -2670,6 +2795,9 @@ function confirmRoleModal() {
   document.querySelectorAll('#role-perm-list .role-menu-cb:checked').forEach(function(cb) {
     menus.add(cb.dataset.menu);
   });
+  document.querySelectorAll('#role-perm-list .role-action-cb:checked').forEach(function(cb) {
+    menus.add(cb.dataset.menu + ':' + cb.dataset.action);
+  });
   if (!menus.size) { alert('请至少选择一个可访问菜单'); return; }
 
   var roleKey = _editingRoleKey || ('role_' + Date.now());
@@ -2690,8 +2818,8 @@ function confirmRoleModal() {
     '<td style="color:#666;font-size:12px">admin</td>' +
     '<td style="color:#666;font-size:12px">' + nowStr + '</td>' +
     '<td>' +
-      '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openRoleModal(\'' + roleKey + '\')">&#9998; 编辑</span>' +
-      '<span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteRole(\'' + roleKey + '\', this)">&#9998; 删除</span>' +
+      '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openRoleModal(\'' + roleKey + '\')">&#9998; 编辑</span>' +
+      '<span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteRole(\'' + roleKey + '\', this)">&#9998; 删除</span>' +
     '</td>';
 
   if (existing) {
@@ -2704,6 +2832,7 @@ function confirmRoleModal() {
   }
 
   closeRoleModal();
+  renderRolePreviewSelect();
   applyRoleToNav();
 }
 
@@ -2754,7 +2883,7 @@ function confirmBatchAdd() {
       '<td style="color:#666;font-size:12px"></td>' +
       '<td style="color:#666;font-size:12px">' + dateStr + '</td>' +
       '<td><span class="badge ' + statusCls + '" data-status="' + statusVal + '">' + statusLabel + '</span></td>' +
-      '<td><span style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>';
+      '<td><span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer" onclick="openUserEditModal(this)">&#9998; 编辑</span></td>';
     tbody.appendChild(tr);
     added++;
   });
@@ -2915,32 +3044,84 @@ function testSiteUrl() {
     });
 }
 
-// ── 站点功能设置 ──
+// ── 站点管理 ──
+// SITE_LIST 是全站唯一的站点数据来源：本页表格由它渲染，群组管理的「绑定站点」勾选列表也从这里取数据。
+// 新增/编辑/删除站点后调用 renderSiteSettingTable() 刷新表格；删除站点时会同步清理各群组里对该站点的绑定。
 var SITE_NUMS = { '交易所': 4, '股票': 2, '充电宝': 40 };
-var _editingSiteRow = null;
+var SITE_LIST = [
+  { id: 'EX01', product: '交易所', name: '赛亚人',     url: 'https://ex01.example.com', deposit: true,  withdraw: true  },
+  { id: 'EX02', product: '交易所', name: '蝙蝠侠',     url: 'https://ex02.example.com', deposit: true,  withdraw: true  },
+  { id: 'EX03', product: '交易所', name: '超人',       url: 'https://ex03.example.com', deposit: true,  withdraw: true  },
+  { id: 'EX04', product: '交易所', name: '蜘蛛侠',     url: 'https://ex04.example.com', deposit: true,  withdraw: false },
+  { id: 'ST01', product: '股票',   name: '派大星',     url: 'https://st01.example.com', deposit: true,  withdraw: false },
+  { id: 'ST02', product: '股票',   name: '皮卡丘',     url: 'https://st02.example.com', deposit: true,  withdraw: true  },
+  { id: 'ST03', product: '股票',   name: '哆啦A梦',    url: 'https://st03.example.com', deposit: true,  withdraw: true  },
+  { id: 'PB01', product: '充电宝', name: '海绵宝宝',   url: 'https://pb01.example.com', deposit: true,  withdraw: true  },
+  { id: 'PB02', product: '充电宝', name: '章鱼哥',     url: 'https://pb02.example.com', deposit: true,  withdraw: true  },
+  { id: 'PB03', product: '充电宝', name: '忍者神龟',   url: 'https://pb03.example.com', deposit: true,  withdraw: true  },
+];
+var _editingSiteId = null;
+var _siteIdCounter = 1000;
 
-function openSiteSettingModal(row) {
-  _editingSiteRow = row || null;
-  var isEdit = !!row;
+function genSiteId(product) {
+  _siteIdCounter++;
+  var prefix = (product || 'ST').slice(0, 1).toUpperCase() + 'X';
+  return prefix + _siteIdCounter;
+}
+
+function getSiteListById(id) {
+  return SITE_LIST.find(function(s) { return s.id === id; }) || null;
+}
+
+function renderSiteSettingTable() {
+  var tbody = document.getElementById('site-setting-body');
+  var kwName = (document.getElementById('site-search-name').value || '').trim().toLowerCase();
+  var kwUrl  = (document.getElementById('site-search-url').value || '').trim().toLowerCase();
+  var rows = SITE_LIST.filter(function(s) {
+    return (!kwName || s.name.toLowerCase().includes(kwName)) &&
+           (!kwUrl  || s.url.toLowerCase().includes(kwUrl));
+  });
+  var info = document.getElementById('site-setting-page-info');
+  if (info) info.textContent = '共 ' + rows.length + ' 条记录';
+  tbody.innerHTML = rows.map(function(s) {
+    return '<tr data-site-id="' + s.id + '">' +
+      '<td style="padding-left:14px"><span class="site-tag">' + s.product + '</span></td>' +
+      '<td style="color:#333;font-weight:500">' + s.name + '</td>' +
+      '<td style="color:#666;font-size:12px;font-family:monospace">' + s.url + '</td>' +
+      '<td><div class="toggle-switch' + (s.deposit ? ' on' : '') + '" onclick="toggleSiteListField(\'' + s.id + '\',\'deposit\')"></div></td>' +
+      '<td><div class="toggle-switch' + (s.withdraw ? ' on' : '') + '" onclick="toggleSiteListField(\'' + s.id + '\',\'withdraw\')"></div></td>' +
+      '<td>' +
+        '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openSiteSettingModal(\'' + s.id + '\')">&#9998; 编辑</span>' +
+        '<span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteSiteSetting(\'' + s.id + '\')">&#9998; 删除</span>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function toggleSiteListField(id, field) {
+  var s = getSiteListById(id);
+  if (s) s[field] = !s[field];
+}
+
+function openSiteSettingModal(id) {
+  _editingSiteId = id || null;
+  var isEdit = !!id;
   document.getElementById('site-setting-modal-title').textContent = isEdit ? '编辑站点' : '添加站点';
+  var s = isEdit ? getSiteListById(id) : null;
 
   var productSel  = document.getElementById('ss-product');
   var productText = document.getElementById('ss-product-text');
   var siteNumRow  = document.getElementById('ss-site-num-row');
-  if (isEdit) {
-    var cells = row.cells;
-    var product = cells[0].textContent.trim();
-    var siteName = cells[1].textContent.trim();
-    var url = cells[2].textContent.trim();
+  if (isEdit && s) {
     productSel.style.display = 'none';
-    productText.textContent = product;
+    productText.textContent = s.product;
     productText.style.display = 'block';
     siteNumRow.style.display = 'none';
     document.getElementById('ss-site-name-row').style.display = '';
-    document.getElementById('ss-site-name-edit').value = siteName;
-    document.getElementById('ss-url').value = url;
-    document.getElementById('ss-toggle-deposit').classList.toggle('on', cells[3].querySelector('.toggle-switch.on') !== null);
-    document.getElementById('ss-toggle-withdraw').classList.toggle('on', cells[4].querySelector('.toggle-switch.on') !== null);
+    document.getElementById('ss-site-name-edit').value = s.name;
+    document.getElementById('ss-url').value = s.url;
+    document.getElementById('ss-toggle-deposit').classList.toggle('on', !!s.deposit);
+    document.getElementById('ss-toggle-withdraw').classList.toggle('on', !!s.withdraw);
   } else {
     productSel.style.display = '';
     productText.style.display = 'none';
@@ -2959,7 +3140,7 @@ function openSiteSettingModal(row) {
 
 function closeSiteSettingModal() {
   document.getElementById('site-setting-modal').style.display = 'none';
-  _editingSiteRow = null;
+  _editingSiteId = null;
 }
 
 function onSsProductChange() {
@@ -2976,15 +3157,11 @@ function onSsProductChange() {
 }
 
 function onSsSiteNumChange() {
-  var product = document.getElementById('ss-product').value;
-  var num = document.getElementById('ss-site-num').value;
-  if (product && num) {
-    document.getElementById('ss-site-name').value = product + '-' + num;
-  }
+  // 站点名称改为自由填写好记的代号（如「赛亚人」「派大星」），不再自动带出「产品-编号」
 }
 
 function confirmSiteSettingModal() {
-  var isEdit = !!_editingSiteRow;
+  var isEdit = !!_editingSiteId;
   var product  = isEdit
     ? document.getElementById('ss-product-text').textContent.trim()
     : document.getElementById('ss-product').value;
@@ -2999,57 +3176,50 @@ function confirmSiteSettingModal() {
   var depositOn = document.getElementById('ss-toggle-deposit').classList.contains('on');
   var withdrawOn = document.getElementById('ss-toggle-withdraw').classList.contains('on');
 
-  var depToggle = '<div class="toggle-switch' + (depositOn ? ' on' : '') + '" onclick="this.classList.toggle(\'on\')"></div>';
-  var witToggle = '<div class="toggle-switch' + (withdrawOn ? ' on' : '') + '" onclick="this.classList.toggle(\'on\')"></div>';
-
-  if (_editingSiteRow) {
-    var cells = _editingSiteRow.cells;
-    cells[0].innerHTML = '<span class="site-tag">' + product + '</span>';
-    cells[1].textContent = siteName;
-    cells[2].textContent = url;
-    cells[3].innerHTML = depToggle;
-    cells[4].innerHTML = witToggle;
+  if (isEdit) {
+    var s = getSiteListById(_editingSiteId);
+    if (s) {
+      s.product = product;
+      s.name = siteName;
+      s.url = url;
+      s.deposit = depositOn;
+      s.withdraw = withdrawOn;
+    }
   } else {
-    var tbody = document.getElementById('site-setting-body');
-    var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td style="padding-left:14px"><span class="site-tag">' + product + '</span></td>' +
-      '<td style="color:#333;font-weight:500">' + siteName + '</td>' +
-      '<td style="color:#666;font-size:12px;font-family:monospace">' + url + '</td>' +
-      '<td>' + depToggle + '</td>' +
-      '<td>' + witToggle + '</td>' +
-      '<td>' +
-        '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openSiteSettingModal(this.closest(\'tr\'))">&#9998; 编辑</span>' +
-        '<span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteSiteSetting(this)">&#9998; 删除</span>' +
-      '</td>';
-    tbody.appendChild(tr);
+    SITE_LIST.push({
+      id: genSiteId(product),
+      product: product,
+      name: siteName,
+      url: url,
+      deposit: depositOn,
+      withdraw: withdrawOn
+    });
   }
   closeSiteSettingModal();
+  renderSiteSettingTable();
 }
 
 function searchSiteSettings() {
-  var name = document.getElementById('site-search-name').value.trim().toLowerCase();
-  var url  = document.getElementById('site-search-url').value.trim().toLowerCase();
-  document.querySelectorAll('#site-setting-body tr').forEach(function(row) {
-    var rowName = (row.cells[1] ? row.cells[1].textContent : '').toLowerCase();
-    var rowUrl  = (row.cells[2] ? row.cells[2].textContent : '').toLowerCase();
-    var match = (!name || rowName.includes(name)) && (!url || rowUrl.includes(url));
-    row.style.display = match ? '' : 'none';
-  });
+  renderSiteSettingTable();
 }
 
 function resetSiteSettings() {
   document.getElementById('site-search-name').value = '';
   document.getElementById('site-search-url').value  = '';
-  document.querySelectorAll('#site-setting-body tr').forEach(function(row) {
-    row.style.display = '';
-  });
+  renderSiteSettingTable();
 }
 
-function deleteSiteSetting(btn) {
-  var row = btn.closest('tr');
-  var name = row.cells[1].textContent.trim();
-  openConfirmModal('确定删除站点「' + name + '」？', function() { row.remove(); });
+function deleteSiteSetting(id) {
+  var s = getSiteListById(id);
+  if (!s) return;
+  openConfirmModal('确定删除站点「' + s.name + '」？已绑定该站点的群组会自动移除此绑定。', function() {
+    SITE_LIST = SITE_LIST.filter(function(x) { return x.id !== id; });
+    renderSiteSettingTable();
+    if (typeof GROUPS !== 'undefined') {
+      GROUPS.forEach(function(g) { g.siteIds = g.siteIds.filter(function(sid) { return sid !== id; }); });
+      if (document.getElementById('group-table-body')) renderGroupTable();
+    }
+  });
 }
 
 // ── 批量添加站点 ──
@@ -3077,7 +3247,7 @@ function addBsRow() {
       '</select>' +
     '</td>' +
     '<td style="padding:4px 6px;border:1px solid #EBEEF5">' +
-      '<input type="text" class="fi bs-site-name" style="width:100%;font-size:12px;padding:4px 6px" placeholder="如：交易所-01">' +
+      '<input type="text" class="fi bs-site-name" style="width:100%;font-size:12px;padding:4px 6px" placeholder="如：派大星">' +
     '</td>' +
     '<td style="padding:4px 6px;border:1px solid #EBEEF5">' +
       '<div style="display:flex;gap:4px;align-items:center">' +
@@ -3149,7 +3319,6 @@ function confirmBatchSite() {
   var rows = document.querySelectorAll('#bs-entries-body tr');
   if (!rows.length) { bsShowError('请至少添加一行'); return; }
 
-  var tbody = document.getElementById('site-setting-body');
   var added = 0;
   var incomplete = 0;
   rows.forEach(function(row) {
@@ -3160,25 +3329,207 @@ function confirmBatchSite() {
     if (!product || !siteName || !url) { incomplete++; return; }
     var depOn = row.querySelector('.bs-dep').classList.contains('on');
     var witOn = row.querySelector('.bs-wit').classList.contains('on');
-    var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td style="padding-left:14px"><span class="site-tag">' + product + '</span></td>' +
-      '<td style="color:#333;font-weight:500">' + siteName + '</td>' +
-      '<td style="color:#666;font-size:12px;font-family:monospace">' + url + '</td>' +
-      '<td><div class="toggle-switch' + (depOn ? ' on' : '') + '" onclick="this.classList.toggle(\'on\')"></div></td>' +
-      '<td><div class="toggle-switch' + (witOn ? ' on' : '') + '" onclick="this.classList.toggle(\'on\')"></div></td>' +
-      '<td>' +
-        '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openSiteSettingModal(this.closest(\'tr\'))">&#9998; 编辑</span>' +
-        '<span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteSiteSetting(this)">&#9998; 删除</span>' +
-      '</td>';
-    tbody.appendChild(tr);
+    SITE_LIST.push({
+      id: genSiteId(product),
+      product: product,
+      name: siteName,
+      url: url,
+      deposit: depOn,
+      withdraw: witOn
+    });
     added++;
   });
 
   if (!added && incomplete) { bsShowError('请确认每行都填写了产品别、站点名称和 URL'); return; }
   if (!added) { bsShowError('请至少填写一行的产品别、站点名称和 URL'); return; }
+  renderSiteSettingTable();
   if (incomplete) { bsShowError('已保存 ' + added + ' 条，另有 ' + incomplete + ' 行资料不完整已略过'); return; }
   closeBatchSiteModal();
+}
+
+// ── 群组管理 ──
+// 数据结构：{ id, chatId, name, siteIds: [siteId,...], enabled, boundAt }
+// siteIds 决定该群组能看到 / 使用哪些站点；未在此列表中绑定的群组一律无法使用机器人。
+var GROUPS = [
+  { id: 'g1', chatId: '-1001234567890', name: '交易所主群', siteIds: ['EX01','EX02'], enabled: true,  boundAt: '2026-05-10' },
+  { id: 'g2', chatId: '-1009876543210', name: '股票VIP群',   siteIds: ['ST01','ST02'], enabled: true,  boundAt: '2026-06-02' },
+  { id: 'g3', chatId: '-1005551237890', name: '测试群（待启用）', siteIds: ['PB01','PB02'], enabled: false, boundAt: '2026-06-15' },
+];
+var _editingGroupId = null;
+var _groupModalSiteIds = [];
+
+// 绑定站点标签：显示为「产品-名称」，超过 GROUP_TAG_LIMIT 个时收起，点击「+N」展开/收起，避免站点一多把表格撑成好几行
+var GROUP_TAG_LIMIT = 6;
+
+function buildGroupSiteTagsHtml(siteIds) {
+  if (!siteIds.length) return '<span style="color:#C0C4CC;font-size:12px">未绑定站点</span>';
+  var tags = siteIds.map(function(sid) {
+    var s = getSiteListById(sid);
+    var label = s ? (s.product + '-' + s.name) : (sid + '（已删除）');
+    return '<span class="site-tag" style="margin:1px 3px 1px 0">' + label + '</span>';
+  });
+  if (tags.length <= GROUP_TAG_LIMIT) return tags.join('');
+  var visible = tags.slice(0, GROUP_TAG_LIMIT).join('');
+  var hidden = tags.slice(GROUP_TAG_LIMIT).join('');
+  var moreCount = tags.length - GROUP_TAG_LIMIT;
+  // 收起的标签放在「+N」按钮前面，展开/收起按钮固定在最后，避免展开后按钮被挤到中间找不到
+  return visible +
+    '<span class="group-site-tags-extra" style="display:none">' + hidden + '</span>' +
+    '<span class="site-tag" data-count="' + moreCount + '" style="margin:1px 3px 1px 0;cursor:pointer;background:#EDF4FF;color:#409EFF" onclick="toggleGroupSiteTags(this)">+' + moreCount + '</span>';
+}
+
+function toggleGroupSiteTags(btn) {
+  var extra = btn.previousElementSibling;
+  if (!extra || !extra.classList.contains('group-site-tags-extra')) return;
+  var showing = extra.style.display !== 'none';
+  extra.style.display = showing ? 'none' : 'inline';
+  btn.textContent = showing ? ('+' + btn.dataset.count) : '收起';
+}
+
+function renderGroupTable() {
+  var tbody = document.getElementById('group-table-body');
+  var kwId = (document.getElementById('group-search-id').value || '').trim().toLowerCase();
+  var kwName = (document.getElementById('group-search-name').value || '').trim().toLowerCase();
+  var rows = GROUPS.filter(function(g) {
+    return (!kwId || g.chatId.toLowerCase().includes(kwId)) &&
+           (!kwName || g.name.toLowerCase().includes(kwName));
+  });
+  document.getElementById('group-page-info').textContent = '共 ' + rows.length + ' 条记录';
+  tbody.innerHTML = rows.map(function(g) {
+    var siteTags = buildGroupSiteTagsHtml(g.siteIds);
+    return '<tr data-group-id="' + g.id + '">' +
+      '<td style="padding-left:14px;font-family:monospace;color:#333">' + g.chatId + '</td>' +
+      '<td style="color:#333;font-weight:500">' + g.name + '</td>' +
+      '<td style="max-width:320px">' + siteTags + '</td>' +
+      '<td><div class="toggle-switch' + (g.enabled ? ' on' : '') + '" onclick="toggleGroupEnabled(\'' + g.id + '\')"></div></td>' +
+      '<td style="color:#666;font-size:12px">' + g.boundAt + '</td>' +
+      '<td>' +
+        '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openGroupModal(\'' + g.id + '\')">&#9998; 编辑</span>' +
+        '<span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteGroup(\'' + g.id + '\')">&#9998; 删除</span>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function searchGroups() { renderGroupTable(); }
+function resetGroups() {
+  document.getElementById('group-search-id').value = '';
+  document.getElementById('group-search-name').value = '';
+  renderGroupTable();
+}
+
+function toggleGroupEnabled(id) {
+  var g = GROUPS.find(function(x) { return x.id === id; });
+  if (g) g.enabled = !g.enabled;
+  renderGroupTable();
+}
+
+function deleteGroup(id) {
+  var g = GROUPS.find(function(x) { return x.id === id; });
+  if (!g) return;
+  openConfirmModal('确定解除绑定群组「' + g.name + '」（' + g.chatId + '）？解绑后该群将无法使用机器人。', function() {
+    GROUPS = GROUPS.filter(function(x) { return x.id !== id; });
+    renderGroupTable();
+  });
+}
+
+function openGroupModal(id) {
+  _editingGroupId = id || null;
+  var isEdit = !!id;
+  document.getElementById('group-modal-title').textContent = isEdit ? '编辑群组' : '添加群组';
+  var g = isEdit ? GROUPS.find(function(x) { return x.id === id; }) : null;
+
+  document.getElementById('gm-chatid').value = g ? g.chatId : '';
+  document.getElementById('gm-chatid').disabled = isEdit;
+  document.getElementById('gm-name').value = g ? g.name : '';
+  document.getElementById('gm-enabled').classList.toggle('on', g ? g.enabled : true);
+  _groupModalSiteIds = g ? g.siteIds.slice() : [];
+
+  renderGroupSitePicker();
+  document.getElementById('group-modal').style.display = 'block';
+}
+
+function closeGroupModal() {
+  document.getElementById('group-modal').style.display = 'none';
+  _editingGroupId = null;
+}
+
+// 按产品分组渲染可勾选的站点列表，数据直接取自「站点管理」页的 SITE_LIST，保证两边一致
+function renderGroupSitePicker() {
+  var box = document.getElementById('gm-site-picker');
+  if (!SITE_LIST.length) {
+    box.innerHTML = '<div style="color:#999;font-size:12px;padding:4px 0">暂无可绑定的站点，请先到「站点管理」添加站点</div>';
+    return;
+  }
+  var byProduct = {};
+  var order = [];
+  SITE_LIST.forEach(function(s) {
+    if (!byProduct[s.product]) { byProduct[s.product] = []; order.push(s.product); }
+    byProduct[s.product].push(s);
+  });
+  box.innerHTML = order.map(function(product) {
+    var items = byProduct[product].map(function(site) {
+      var checked = _groupModalSiteIds.indexOf(site.id) !== -1;
+      return '<label style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px;color:#333;cursor:pointer">' +
+        '<input type="checkbox" value="' + site.id + '"' + (checked ? ' checked' : '') + ' onchange="onGroupSiteCheck(this)">' +
+        site.name +
+      '</label>';
+    }).join('');
+    return '<div style="margin-bottom:8px">' +
+      '<div style="font-size:12px;font-weight:600;color:#606266;margin-bottom:4px">' + product + '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0 10px">' + items + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function selectAllGroupSites() {
+  _groupModalSiteIds = SITE_LIST.map(function(s) { return s.id; });
+  renderGroupSitePicker();
+}
+
+function clearAllGroupSites() {
+  _groupModalSiteIds = [];
+  renderGroupSitePicker();
+}
+
+function onGroupSiteCheck(cb) {
+  var id = cb.value;
+  if (cb.checked) {
+    if (_groupModalSiteIds.indexOf(id) === -1) _groupModalSiteIds.push(id);
+  } else {
+    _groupModalSiteIds = _groupModalSiteIds.filter(function(x) { return x !== id; });
+  }
+}
+
+function confirmGroupModal() {
+  var chatId = document.getElementById('gm-chatid').value.trim();
+  var name = document.getElementById('gm-name').value.trim();
+  var enabled = document.getElementById('gm-enabled').classList.contains('on');
+
+  if (!_editingGroupId) {
+    if (!chatId) { alert('请填写群组ID'); return; }
+    if (!/^-?\d+$/.test(chatId)) { alert('群组ID 格式不正确，应为 Telegram 群组的数字 chat_id（通常以 -100 开头）'); return; }
+    if (GROUPS.some(function(g) { return g.chatId === chatId; })) { alert('该群组ID已绑定，请勿重复添加'); return; }
+  }
+  if (!name) { alert('请填写群组名称'); return; }
+
+  if (_editingGroupId) {
+    var g = GROUPS.find(function(x) { return x.id === _editingGroupId; });
+    g.name = name;
+    g.enabled = enabled;
+    g.siteIds = _groupModalSiteIds.slice();
+  } else {
+    GROUPS.push({
+      id: 'g' + Date.now(),
+      chatId: chatId,
+      name: name,
+      siteIds: _groupModalSiteIds.slice(),
+      enabled: enabled,
+      boundAt: new Date().toISOString().slice(0, 10)
+    });
+  }
+  closeGroupModal();
+  renderGroupTable();
 }
 
 function openConfirmModal(text, onConfirm) {
@@ -3198,6 +3549,8 @@ function deleteRole(roleKey, btn) {
   openConfirmModal('确定删除角色「' + roleName + '」？', function() {
     delete ROLES[roleKey];
     row.remove();
+    if (currentRoleKey === roleKey) { currentRoleKey = 'super'; applyRoleToNav(); }
+    renderRolePreviewSelect();
   });
 }
 
@@ -3313,9 +3666,9 @@ function confirmAccountModal() {
       '<td style="color:#666;font-size:12px">admin</td>' +
       '<td><div class="labeled-toggle on" onclick="toggleAdminStatus(this)"><span class="toggle-label">启用</span><div class="toggle-knob"></div></div></td>' +
       '<td>' +
-        '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>' +
-        '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + account + '\')">&#9998; 密码重制</span>' +
-        '<span style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>' +
+        '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openEditAccountModal(this)">&#9998; 编辑</span>' +
+        '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + account + '\')">&#9998; 密码重制</span>' +
+        '<span class="op-action" style="color:#F56C6C;font-size:12px;cursor:pointer" onclick="deleteAccount(this)">&#9998; 删除</span>' +
       '</td>';
     tbody.appendChild(tr);
   }
@@ -3549,9 +3902,9 @@ function confirmAddModal() {
     '<td><span class="badge badge-active" data-status="normal">启用</span></td>' +
     '<td style="color:#666;font-size:12px">' + remark + '</td>' +
     '<td>' +
-      '<span style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + tgid + '\')">&#9998; 编辑密码</span>' +
-      '<span style="color:#909399;font-size:12px;cursor:pointer;margin-right:10px" onclick="changeStatus(this,\'' + tgid + '\')">&#9998; 禁用</span>' +
-      '<span style="color:#409EFF;font-size:12px;cursor:pointer">&#9998; 谷歌验证</span>' +
+      '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer;margin-right:10px" onclick="openPwdModal(\'' + tgid + '\')">&#9998; 编辑密码</span>' +
+      '<span class="op-action" style="color:#909399;font-size:12px;cursor:pointer;margin-right:10px" onclick="changeStatus(this,\'' + tgid + '\')">&#9998; 禁用</span>' +
+      '<span class="op-action" style="color:#409EFF;font-size:12px;cursor:pointer">&#9998; 谷歌验证</span>' +
     '</td>';
   tbody.appendChild(tr);
   closeAddModal();
@@ -3739,6 +4092,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSitePicker('wit-site-selector', { mode: 'multi', onApply: witSiteFilter });
     renderSitePicker('users-site-selector', { mode: 'multi', onApply: function(ids) { searchUsers(ids); } });
     renderSitePermTabs();
+    renderSiteSettingTable();
+    renderGroupTable();
+    renderRolePreviewSelect();
     applyRoleToNav();
   }catch(e){}
 });
@@ -4056,7 +4412,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <select id="ss-site-num" class="fi" style="width:100%;margin-bottom:6px" onchange="onSsSiteNumChange()">
           <option value="">请先选择产品</option>
         </select>
-        <input id="ss-site-name" class="fi" style="width:100%" placeholder="站点名称（可修改，如「交易所-01」）">
+        <input id="ss-site-name" class="fi" style="width:100%" placeholder="给站点起个好记的代号，如「赛亚人」「派大星」">
       </div>
       <div id="ss-site-name-row" style="display:none">
         <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>站点名称</label>
@@ -4065,7 +4421,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div>
         <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>URL</label>
         <div style="display:flex;gap:8px;align-items:center">
-          <input id="ss-url" class="fi" style="flex:1" placeholder="https://example.com/api">
+          <input id="ss-url" class="fi" style="flex:1" placeholder="https://example.com">
           <button class="btn" style="flex-shrink:0;padding:0 12px" onclick="testSiteUrl()">测试</button>
         </div>
         <div id="ss-url-result" style="display:none;margin-top:6px;font-size:12px;padding:5px 10px;border-radius:4px"></div>
@@ -4117,6 +4473,48 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <!-- ── 批量添加站点弹窗 ── -->
+<!-- ── 添加/编辑群组弹窗 ── -->
+<div id="group-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9999;">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:6px;width:460px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 4px 24px rgba(0,0,0,0.18);overflow:hidden">
+    <div style="padding:14px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+      <span id="group-modal-title" style="font-size:14px;font-weight:600;color:#333">添加群组</span>
+      <span onclick="closeGroupModal()" style="cursor:pointer;color:#999;font-size:20px;line-height:1">&times;</span>
+    </div>
+    <div style="padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:12px">
+      <div>
+        <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>群组ID（chat_id）</label>
+        <input id="gm-chatid" class="fi" style="width:100%;font-family:monospace" placeholder="如：-1001234567890">
+        <div style="font-size:11px;color:#999;margin-top:4px">将机器人拉入群组后，可通过 /id 指令在群内获取该群组的 chat_id。</div>
+      </div>
+      <div>
+        <label style="font-size:13px;color:#606266;display:block;margin-bottom:5px"><span style="color:#F56C6C;margin-right:2px">*</span>群组名称</label>
+        <input id="gm-name" class="fi" style="width:100%" placeholder="便于识别的备注名称，如「交易所主群」">
+      </div>
+      <div>
+        <label style="font-size:13px;color:#606266;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span><span style="color:#F56C6C;margin-right:2px"></span>绑定站点（该群组仅能查看/使用以下站点）</span>
+          <span style="font-size:12px;font-weight:normal">
+            <span style="color:#409EFF;cursor:pointer" onclick="selectAllGroupSites()">全选</span>
+            <span style="color:#ccc;margin:0 4px">|</span>
+            <span style="color:#409EFF;cursor:pointer" onclick="clearAllGroupSites()">全清空</span>
+          </span>
+        </label>
+        <div id="gm-site-picker" style="max-height:220px;overflow-y:auto;border:1px solid #EBEEF5;border-radius:4px;padding:8px 10px;background:#FAFBFC"></div>
+      </div>
+      <div>
+        <label style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#333">
+          <span>启用（关闭后该群组暂停使用机器人，但保留绑定关系）</span>
+          <div id="gm-enabled" class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+        </label>
+      </div>
+    </div>
+    <div style="padding:8px 18px 16px;display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;border-top:1px solid #f0f0f0">
+      <button class="btn" onclick="closeGroupModal()">取消</button>
+      <button class="btn btn-green" onclick="confirmGroupModal()">保存</button>
+    </div>
+  </div>
+</div>
+
 <div id="batch-site-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9999;">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:6px;width:680px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 4px 24px rgba(0,0,0,0.18);overflow:hidden">
     <div style="padding:14px 18px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
