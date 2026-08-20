@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>CreditBot 互動原型</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#05070A;min-height:100vh;padding:24px 12px;display:flex;flex-direction:column;align-items:center;gap:16px}
+
+.topbar{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.topbar-title{color:#EDEFF2;font-size:14px;font-weight:700}
+.topbar-sub{color:#5A6478;font-size:11.5px;margin-top:2px}
+.reset-btn{background:#1B212C;color:#9C8CEE;border:none;font-size:11.5px;padding:7px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.reset-btn:hover{background:#232A38}
+
+.phone{width:100%;max-width:420px;background:#0A0D12;border-radius:20px;border:1px solid #1A2130;overflow:hidden;display:flex;flex-direction:column;height:640px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+
+.phone-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#0F141C;border-bottom:1px solid #1A2130;flex-shrink:0}
+.phone-name{color:#EDEFF2;font-size:14px;font-weight:700}
+.phone-status{color:#5FC583;font-size:11px;margin-top:1px}
+
+.feed{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.feed::-webkit-scrollbar{width:6px}
+.feed::-webkit-scrollbar-thumb{background:#232A38;border-radius:4px}
+
+.row{display:flex;gap:8px;align-items:flex-end}
+.row.right{justify-content:flex-end}
+.avatar{width:30px;height:30px;border-radius:50%;background:#7C6EE0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;flex-shrink:0}
+.avatar.small{width:26px;height:26px;font-size:10px}
+
+.card{max-width:82%;border-radius:16px;padding:10px 13px 8px;font-size:13.5px;line-height:1.55;color:#EDEFF2}
+.card.left{background:#161B24;border-bottom-left-radius:4px}
+.card.right{background:#3B6BA8;border-bottom-right-radius:4px}
+.sender{font-size:12px;font-weight:700;margin-bottom:4px}
+.sender.violet{color:#9C8CEE}
+.sender.blue{color:#EAF1FB}
+
+.i-icon{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#3A4152;color:#B7BECB;font-size:10px;font-weight:700;margin-right:2px;vertical-align:middle}
+.tg-link{color:#7FB4E8;text-decoration:underline}
+
+.tag-ok{display:inline-block;background:#173322;color:#5FC583;font-size:11px;padding:1px 8px;border-radius:4px}
+.tag-no{display:inline-block;background:#331A1A;color:#E0685F;font-size:11px;padding:1px 8px;border-radius:4px}
+
+.meta{display:flex;justify-content:flex-end;align-items:center;gap:5px;font-size:10.5px;color:#5A6478;margin-top:5px}
+.card.right .meta{color:#BFD8F2}
+.edited{font-style:italic;opacity:.85}
+.tick{color:#6FA8DC}
+
+.kbd{margin-top:9px;display:flex;flex-direction:column;gap:5px}
+.kbd-row{display:flex;gap:5px}
+.kbd-row-col{display:flex;flex-direction:column;gap:5px}
+.kbd-btn{flex:1;background:#232A38;color:#DCE1E8;font-size:12px;padding:9px 8px;border-radius:8px;text-align:center;white-space:nowrap;border:none;cursor:pointer;font-family:inherit}
+.kbd-btn:hover{background:#2C3444}
+.kbd-btn.wide{width:100%}
+.kbd-btn.primary{background:#2A4A72;color:#BFD8F2}
+.kbd-btn.primary:hover{background:#335A88}
+.kbd-btn.danger{background:#2C1919;color:#D9645A}
+.kbd-nav{display:flex;gap:5px}
+.kbd-btn.nav{background:#1B212C;color:#6E7A8C;font-size:10.5px;padding:9px 4px}
+.kbd-cancel{background:#2C1919;color:#D9645A;font-size:12px;padding:9px;border-radius:8px;text-align:center;border:none;cursor:pointer;font-family:inherit;width:100%}
+.kbd-cancel:hover{background:#3A1F1F}
+
+.composer{display:flex;align-items:flex-end;gap:8px;padding:10px 12px;background:#0F141C;border-top:1px solid #1A2130;flex-shrink:0}
+.composer-input{flex:1;background:#161B24;color:#EDEFF2;border:1px solid #232A38;border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;resize:none;outline:none}
+.composer-input:disabled{color:#4A5568;background:#0F141C}
+.composer-input:focus{border-color:#3B6BA8}
+.send-btn{background:#3B6BA8;color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0}
+.send-btn:disabled{background:#1B212C;color:#4A5568;cursor:not-allowed}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">CreditBot 互動原型</div>
+    <div class="topbar-sub">點擊按鈕，或於下方輸入文字來體驗流程</div>
+  </div>
+  <button class="reset-btn" id="resetBtn">↻ 重新開始</button>
+</div>
+
+<div class="phone">
+  <div class="phone-header">
+    <div class="avatar">Bot</div>
+    <div>
+      <div class="phone-name">CreditBot</div>
+      <div class="phone-status">機器人</div>
+    </div>
+  </div>
+
+  <div class="feed" id="feed"></div>
+
+  <div class="composer">
+    <textarea class="composer-input" id="composerInput" rows="1" placeholder="目前請使用上方按鈕操作" disabled></textarea>
+    <button class="send-btn" id="sendBtn" disabled>➤</button>
+  </div>
+</div>
+
+<script>
+const SITES = [
+  { label: '充電寶-賽亞人', short: '賽亞人' },
+  { label: '充電寶-海綿寶寶', short: '海綿寶寶' },
+  { label: '充電寶-章魚哥', short: '章魚哥' },
+];
+
+let state = {
+  messages: [],      // {id, from:'op'|'bot', html, time, edited, kbdHtml}
+  phase: 'start',
+  orderType: null,
+  site: null,
+  orders: [],
+  existingAccounts: ['11122202'],
+  currentBotId: null,
+};
+
+function nowStr() {
+  const d = new Date();
+  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+function uid() { return 'm' + Math.random().toString(36).slice(2) + Date.now(); }
+
+function mention() { return '<span class="tg-link">@操作員A</span>'; }
+function iconI() { return '<span class="i-icon">i</span>'; }
+function tag(kind, text) { return `<span class="${kind === 'ok' ? 'tag-ok' : 'tag-no'}">${text}</span>`; }
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function pushOperator(html) {
+  state.messages.push({ id: uid(), from: 'op', html, time: nowStr() });
+  render();
+}
+
+function setBotContent(html, kbdHtml) {
+  if (state.currentBotId) {
+    const msg = state.messages.find(m => m.id === state.currentBotId);
+    if (msg) {
+      msg.html = html;
+      msg.time = nowStr();
+      msg.edited = true;
+      msg.kbdHtml = kbdHtml || '';
+    }
+  } else {
+    const id = uid();
+    state.currentBotId = id;
+    state.messages.push({ id, from: 'bot', html, time: nowStr(), edited: false, kbdHtml: kbdHtml || '' });
+  }
+  render();
+}
+
+function inputPromptContent() {
+  return `${mention()}<br>已選擇：${state.orderType}・充電寶・${state.site.short}<br><br>` +
+    `請輸入：帳號，金額，備注<br>例：123456，100，獎金<br>多筆請換行輸入，每行一筆`;
+}
+
+function startOver() {
+  state = {
+    messages: [],
+    phase: 'start',
+    orderType: null,
+    site: null,
+    orders: [],
+    existingAccounts: state.existingAccounts, // keep learned duplicates across resets? reset instead:
+    currentBotId: null,
+  };
+  state.existingAccounts = ['11122202'];
+  render();
+  setTimeout(() => {
+    state.messages.push({ id: uid(), from: 'op', html: '@CreditBot', time: nowStr() });
+    const id = uid();
+    state.currentBotId = id;
+    const kbd = `<div class="kbd"><div class="kbd-row-col">
+      <button class="kbd-btn wide" onclick="goScenario0()">情境 0・群組未綁定</button>
+      <button class="kbd-btn wide" onclick="goScenarioX()">情境 X・帳號審核中</button>
+      <button class="kbd-btn wide primary" onclick="goStep1()">▶ 開始上下分流程</button>
+    </div></div>`;
+    state.messages.push({ id, from: 'bot', html: iconI() + ' 請選擇要體驗的情境', time: nowStr(), edited: false, kbdHtml: kbd });
+    render();
+  }, 10);
+}
+
+function goScenario0() {
+  state.phase = 'scenario0';
+  setBotContent(`${tag('no','未授權')} ${mention()} 本群未授權，請聯繫管理員`, resultKbd());
+}
+function goScenarioX() {
+  state.phase = 'scenarioX';
+  setBotContent(`${mention()} 账号申请完成，请等候审核`, resultKbd());
+}
+function goStep1() {
+  state.phase = 'chooseType';
+  setBotContent(`${iconI()} ${mention()} 請選擇操作類型`, chooseTypeKbd());
+}
+function chooseType(type) {
+  state.orderType = type;
+  state.phase = 'chooseSite';
+  setBotContent(`${iconI()} ${mention()} 請選擇站點`, chooseSiteKbd());
+}
+function chooseSite(idx) {
+  state.site = SITES[idx];
+  state.phase = 'inputInfo';
+  setBotContent(inputPromptContent(), inputInfoKbd());
+}
+function backToChooseType() { goStep1(); }
+function backToChooseSite() {
+  state.phase = 'chooseSite';
+  setBotContent(`${iconI()} ${mention()} 請選擇站點`, chooseSiteKbd());
+}
+function backToInput() {
+  state.phase = 'inputInfo';
+  setBotContent(inputPromptContent(), inputInfoKbd());
+}
+function retry() { backToInput(); }
+
+function cancelFlow() {
+  state.phase = 'resultCancelled';
+  setBotContent('操作已取消。', resultKbd());
+}
+
+function parseInput(text) {
+  return text.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+    const parts = line.split(/[，,]/).map(p => p.trim());
+    return { account: parts[0] || '', amount: parts[1] || '', note: parts[2] || '' };
+  }).filter(o => o.account);
+}
+
+function submitInput() {
+  const raw = document.getElementById('composerInput').value;
+  const parsed = parseInput(raw);
+  if (parsed.length === 0) return;
+  state.orders = parsed;
+  pushOperator(raw.split('\n').map(l => `<div>${esc(l)}</div>`).join(''));
+  document.getElementById('composerInput').value = '';
+  state.phase = 'confirm';
+  const sign = state.orderType === '上分' ? '+' : '-';
+  const lines = parsed.map((o, i) => `<div>${i+1}. 帳號：${esc(o.account)}　金額：${sign}${esc(o.amount)}　備注：${esc(o.note)}</div>`).join('');
+  // new message, not an edit of the input prompt
+  state.currentBotId = null;
+  setBotContent(
+    `${mention()}<br>確認訂單：<br><br>類型：${state.orderType}<br>${lines}產品：充電寶・${state.site.short}`,
+    confirmKbd()
+  );
+}
+
+function confirmOrder() {
+  state.phase = 'processing';
+  setBotContent(
+    `${mention()}<br>處理結果：<br><br>${tag('ok','⏳ 处理中')}　筆數：${state.orders.length}筆<br><br>產品：充電寶・${state.site.short}`,
+    ''
+  );
+  setTimeout(() => {
+    const dup = state.orders.find(o => state.existingAccounts.includes(o.account));
+    if (dup) {
+      state.phase = 'resultFail';
+      setBotContent(
+        `${mention()}<br>處理結果：${tag('no','❌ 失敗')}<br><br>失败原因：账号重复。账号：${esc(dup.account)}<br><br>產品：充電寶・${state.site.short}`,
+        resultFailKbd()
+      );
+    } else {
+      state.existingAccounts.push(...state.orders.map(o => o.account));
+      state.phase = 'resultSuccess';
+      setBotContent(
+        `${mention()}<br>處理結果：<br><br>${tag('ok','✅ 完成')}　筆數：${state.orders.length}筆<br><br>產品：充電寶・${state.site.short}`,
+        resultKbd()
+      );
+    }
+  }, 1300);
+}
+
+// --- keyboard html builders ---
+function chooseTypeKbd() {
+  return `<div class="kbd">
+    <div class="kbd-row">
+      <button class="kbd-btn" onclick="chooseType('上分')">＋ 上分</button>
+      <button class="kbd-btn" onclick="chooseType('下分')">－ 下分</button>
+    </div>
+    <button class="kbd-cancel" onclick="cancelFlow()">✕ 取消</button>
+  </div>`;
+}
+function chooseSiteKbd() {
+  return `<div class="kbd">
+    <div class="kbd-row">
+      <button class="kbd-btn" onclick="chooseSite(0)">${SITES[0].label}</button>
+      <button class="kbd-btn" onclick="chooseSite(1)">${SITES[1].label}</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn" onclick="chooseSite(2)">${SITES[2].label}</button>
+    </div>
+    <div class="kbd-nav">
+      <button class="kbd-btn nav" onclick="backToChooseType()">← 上一步</button>
+      <button class="kbd-btn nav" onclick="backToChooseType()">⌂ 主選單</button>
+    </div>
+    <button class="kbd-cancel" onclick="cancelFlow()">✕ 取消</button>
+  </div>`;
+}
+function inputInfoKbd() {
+  return `<div class="kbd">
+    <div class="kbd-nav">
+      <button class="kbd-btn nav" onclick="backToChooseSite()">← 上一步</button>
+      <button class="kbd-btn nav" onclick="backToChooseType()">⌂ 主選單</button>
+    </div>
+    <button class="kbd-cancel" onclick="cancelFlow()">✕ 取消</button>
+  </div>`;
+}
+function confirmKbd() {
+  return `<div class="kbd">
+    <div class="kbd-row">
+      <button class="kbd-btn primary" onclick="confirmOrder()">✓ 確認</button>
+      <button class="kbd-btn danger" onclick="cancelFlow()">✕ 取消</button>
+    </div>
+    <button class="kbd-btn nav wide" onclick="backToInput()">← 上一步</button>
+  </div>`;
+}
+function resultFailKbd() {
+  return `<div class="kbd">
+    <div class="kbd-row">
+      <button class="kbd-btn" onclick="retry()">↻ 重試</button>
+      <button class="kbd-btn nav" onclick="backToChooseType()">⌂ 主選單</button>
+    </div>
+  </div>`;
+}
+function resultKbd() {
+  return `<div class="kbd"><button class="kbd-btn wide primary" onclick="startOver()">↻ 重新開始</button></div>`;
+}
+
+// --- render ---
+function render() {
+  const feed = document.getElementById('feed');
+  feed.innerHTML = state.messages.map((m, idx) => {
+    const isLast = idx === state.messages.length - 1;
+    const kbd = m.kbdHtml || '';
+    return `
+      <div class="row ${m.from === 'op' ? 'right' : ''}">
+        ${m.from === 'bot' ? '<div class="avatar small">Bot</div>' : ''}
+        <div class="card ${m.from === 'op' ? 'right' : 'left'}">
+          <div class="sender ${m.from === 'op' ? 'blue' : 'violet'}">${m.from === 'op' ? '操作員A' : 'CreditBot'}</div>
+          <div>${m.html}</div>
+          ${kbd}
+          <div class="meta">
+            ${m.time}
+            ${m.from === 'op' ? '<span class="tick">✓✓</span>' : ''}
+            ${m.edited ? '<span class="edited">已編輯</span>' : ''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  feed.scrollTop = feed.scrollHeight;
+
+  const input = document.getElementById('composerInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const enabled = state.phase === 'inputInfo';
+  input.disabled = !enabled;
+  input.placeholder = enabled ? '帳號，金額，備注（多筆請換行）' : '目前請使用上方按鈕操作';
+  sendBtn.disabled = !enabled || !input.value.trim();
+}
+
+document.getElementById('composerInput').addEventListener('input', (e) => {
+  document.getElementById('sendBtn').disabled = state.phase !== 'inputInfo' || !e.target.value.trim();
+});
+document.getElementById('sendBtn').addEventListener('click', submitInput);
+document.getElementById('resetBtn').addEventListener('click', startOver);
+
+startOver();
+</script>
+
+</body>
+</html>
